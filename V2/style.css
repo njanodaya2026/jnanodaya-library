@@ -25,40 +25,8 @@ body.mobile-app-mode #appShell {
   margin: 0 auto;
   min-height: 100vh;
   box-shadow: 0 0 45px rgba(15, 23, 42, 0.22);
-  padding-bottom: 82px;
+  padding-bottom: 76px;
   position: relative;
-}
-
-/* Keep top bar clean and non-crowded inside 460px App Mode */
-body.mobile-app-mode header .max-w-7xl,
-body.mobile-app-mode header .max-w-\[1680px\] {
-  padding-left: 0.625rem !important;
-  padding-right: 0.625rem !important;
-}
-
-body.mobile-app-mode #hdrTagline,
-body.mobile-app-mode #viewToggleLabel {
-  display: none !important;
-}
-
-body.mobile-app-mode #hdrLibName {
-  font-size: 0.75rem !important;
-  max-width: 85px;
-}
-
-/* Prevent multi-column squeezing inside narrow 460px App Mode */
-body.mobile-app-mode .lg\:col-span-5,
-body.mobile-app-mode .lg\:col-span-7,
-body.mobile-app-mode .lg\:col-span-12 {
-  grid-column: span 12 / span 12 !important;
-}
-
-body.mobile-app-mode #ftrBearersGrid {
-  grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
-}
-
-body.mobile-app-mode #ftrBearersGrid > div {
-  word-break: break-word;
 }
 
 /* Smooth Scroll Reveal */
@@ -104,26 +72,6 @@ body.mobile-app-mode #ftrBearersGrid > div {
 .dark .skeleton {
   background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
   background-size: 800px 100%;
-}
-
-/* Mobile touch & spacing polish */
-@media (max-width: 768px) {
-  body {
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  input, select, textarea {
-    font-size: 16px !important; /* Prevents auto-zoom on mobile */
-  }
-
-  main {
-    padding-bottom: 5.5rem !important;
-  }
-
-  #view_home {
-    gap: 0.75rem !important;
-    padding-bottom: 1.5rem !important;
-  }
 }
 
 @media print {
