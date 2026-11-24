@@ -1,5 +1,11 @@
+html, body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
 body {
   font-family: 'Plus Jakarta Sans', 'Noto Sans Malayalam', sans-serif;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .glass {
@@ -11,7 +17,7 @@ body {
   background: rgba(15, 23, 42, 0.90);
 }
 
-/* Mobile App Mode Shell */
+/* ==================== MOBILE APP MODE SHELL ==================== */
 body.mobile-app-mode {
   background-color: #cbd5e1;
 }
@@ -61,7 +67,64 @@ body.mobile-app-mode #ftrBearersGrid > div {
   word-break: break-word;
 }
 
-/* Smooth Scroll Reveal */
+/* Hide website footer & extra clutter in App Mode */
+body.mobile-app-mode footer {
+  display: none !important;
+}
+
+/* Native App Top Header Bar */
+body.mobile-app-mode header {
+  border-bottom: 1px solid rgba(226, 232, 240, 0.7);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+}
+
+/* Clean App-like Scrollbars in App Mode */
+body.mobile-app-mode ::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
+
+/* ==================== HEADER & FOOTER OVERFLOW FIXES ==================== */
+header .max-w-7xl,
+header .max-w-\[1680px\] {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+header .max-w-7xl::-webkit-scrollbar,
+header .max-w-\[1680px\]::-webkit-scrollbar {
+  display: none;
+}
+
+#loggedInNavBtns .desktop-only {
+  display: none !important;
+}
+
+#loggedUserBadge {
+  max-width: 65px !important;
+}
+
+#ftrBearersGrid {
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)) !important;
+}
+
+#ftrBearersGrid > div {
+  min-width: 0;
+  word-wrap: break-word;
+}
+
+#view_home > div,
+#view_member > div,
+#view_admin > div {
+  max-width: 100%;
+}
+
+/* ==================== INTERACTION & ANIMATIONS ==================== */
+button:active {
+  transform: scale(0.96);
+  transition: transform 0.08s ease;
+}
+
 .reveal {
   opacity: 0;
   transform: translateY(16px);
@@ -106,58 +169,22 @@ body.mobile-app-mode #ftrBearersGrid > div {
   background-size: 800px 100%;
 }
 
-/* Mobile touch & spacing polish */
-@media (max-width: 768px) {
-  body {
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  input, select, textarea {
-    font-size: 16px !important; /* Prevents auto-zoom on mobile */
-  }
-
-  main {
-    padding-bottom: 5.5rem !important;
-  }
-
-  #view_home {
-    gap: 0.75rem !important;
-    padding-bottom: 1.5rem !important;
-  }
-}
-
-@media print {
-  .no-print { display: none !important; }
-  body { background: white !important; color: black !important; }
-  #appShell { max-width: 100% !important; box-shadow: none !important; }
-}
-/* ==================== NATIVE MOBILE APP EXPERIENCE ==================== */
-
-/* Hide website footer & extra clutter in App Mode */
-body.mobile-app-mode footer {
-  display: none !important;
-}
-
-/* Native App Top Header Bar */
-body.mobile-app-mode header {
-  border-bottom: 1px solid rgba(226, 232, 240, 0.7);
-  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
-}
-
-/* Tactile App Button Press Effect */
-button:active {
-  transform: scale(0.96);
-  transition: transform 0.08s ease;
-}
-
-/* Clean App-like Scrollbars */
-body.mobile-app-mode ::-webkit-scrollbar {
-  width: 0px;
-  height: 0px;
-}
-
 /* Native Bottom-Sheet Style Modals on Mobile & App Mode */
-body.mobile-app-mode .fixed.inset-0,
+body.mobile-app-mode .fixed.inset-0 {
+  align-items: flex-end !important;
+  padding: 0 !important;
+}
+
+body.mobile-app-mode .fixed.inset-0 > div {
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-top-left-radius: 1.75rem !important;
+  border-top-right-radius: 1.75rem !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  animation: slideUpSheet 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 @media (max-width: 640px) {
   .fixed.inset-0 {
     align-items: flex-end !important;
@@ -172,6 +199,21 @@ body.mobile-app-mode .fixed.inset-0,
     max-width: 100% !important;
     margin: 0 !important;
     animation: slideUpSheet 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  input, select, textarea {
+    font-size: 16px !important; /* Prevents auto-zoom on mobile */
+  }
+
+  main {
+    padding-bottom: 5.5rem !important;
+  }
+}
+
+@media (max-width: 768px) {
+  #view_home {
+    gap: 0.75rem !important;
+    padding-bottom: 1.5rem !important;
   }
 }
 
@@ -190,4 +232,10 @@ body.mobile-app-mode .fixed.inset-0,
 #mobileBottomNav {
   box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.06);
   padding-bottom: env(safe-area-inset-bottom, 8px);
+}
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: white !important; color: black !important; }
+  #appShell { max-width: 100% !important; box-shadow: none !important; }
 }
