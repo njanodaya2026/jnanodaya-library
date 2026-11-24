@@ -363,8 +363,12 @@ function checkExistingPhoneHint() {
   // Intentionally no-op for unauthenticated guests to prevent phone enumeration / privacy leak
 }
 function setUiScale(mode) {
-  const sizes = { normal: '16px', large: '18px', xlarge: '20px' };
-  document.documentElement.style.fontSize = sizes[mode] || '16px';
+  document.documentElement.style.fontSize = '16px'; // Keeps Home Page & Header strictly normal!
+  const adminEl = document.getElementById('view_admin');
+  const zooms = { normal: '100%', large: '112%', xlarge: '122%' };
+  if (adminEl) {
+    adminEl.style.zoom = zooms[mode] || '100%';
+  }
   localStorage.setItem('jnanodaya_ui_scale', mode);
 
   ['normal', 'large', 'xlarge'].forEach(m => {
@@ -379,7 +383,6 @@ function setUiScale(mode) {
   });
 }
 
-// Apply saved scale on page load (defaults to 'large' on wide desktop screens)
 document.addEventListener('DOMContentLoaded', () => {
   const savedScale = localStorage.getItem('jnanodaya_ui_scale') || (window.innerWidth >= 1280 ? 'large' : 'normal');
   setUiScale(savedScale);
