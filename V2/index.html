@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ml">
 <head>
+  <link rel="manifest" href="manifest.json" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ജ്ഞാനോദയ ആർട്സ് & സ്പോർട്സ് ക്ലബ്ബ് ലൈബ്രറി</title>
@@ -128,137 +129,138 @@
   <!-- ==================== MAIN VIEWS ==================== -->
   <main class="flex-1">
 
-    <!-- 1. HOME PAGE (TABLE-BASED CATALOG + CLICKABLE AVAILABLE BOOKS) -->
-    <section id="view_home" class="space-y-8 pb-10">
-      <div class="bg-indigo-950 text-indigo-100 text-xs py-2 overflow-hidden border-b border-indigo-800/60">
-        <div class="animate-marquee font-medium" id="homeNoticeTicker">
-          📢 ജ്ഞാനോദയ ആർട്സ് & സ്പോർട്സ് ക്ലബ്ബ് ലൈബ്രറിയിലേക്ക് സ്വാഗതം!
+  <!-- 1. HOME PAGE (FLIPKART / AMAZON STYLE COMPACT MOBILE APP LAYOUT) -->
+    <section id="view_home" class="space-y-3.5 pb-12 max-w-[1680px] mx-auto px-2.5 sm:px-6 pt-2.5">
+
+      <!-- Compact Notice Strip -->
+      <div class="bg-indigo-950 text-indigo-100 text-[11px] py-1.5 px-3 rounded-xl overflow-hidden flex items-center gap-2 border border-indigo-800/50">
+        <span class="px-1.5 py-0.5 rounded bg-amber-400 text-slate-950 font-extrabold text-[9px] uppercase shrink-0">News</span>
+        <div class="animate-marquee font-medium truncate" id="homeNoticeTicker">
+          📢 ജ്ഞാനോദയ ആർട്സ് &amp; സ്പോർട്സ് ക്ലബ്ബ് ലൈബ്രറിയിലേക്ക് സ്വാഗതം!
         </div>
       </div>
 
-      <div class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white mx-3 sm:mx-6 rounded-3xl overflow-hidden shadow-xl">
-        <div class="max-w-7xl mx-auto px-5 sm:px-8 py-8 sm:py-12 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-          <div class="lg:col-span-7 space-y-4">
-            <span class="inline-block px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-indigo-200 text-[11px] font-semibold">
-              വായനയാണ് വളർച്ച • അറിവാണ് വെളിച്ചം
-            </span>
-            <h2 id="homeHeroTitle" class="text-xl sm:text-3xl lg:text-4xl font-bold leading-snug">
-              ജ്ഞാനോദയ ആർട്സ് & സ്പോർട്സ് ക്ലബ്ബ് ലൈബ്രറി
+      <!-- Sticky-Style Search & Filter Bar (Amazon / Flipkart Top Search) -->
+      <div class="sticky top-16 z-20 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md p-2.5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
+        <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 px-3 py-2 rounded-xl border border-slate-200/70 dark:border-slate-700 focus-within:border-indigo-500">
+          <span class="text-sm">🔍</span>
+          <input type="text" id="homeSearch" oninput="resetHomePageAndRender()"
+            placeholder="പുസ്തകം, എഴുത്തുകാരൻ, ID തിരയുക..."
+            class="w-full bg-transparent text-sm text-slate-900 dark:text-white placeholder-slate-400 outline-none" />
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <select id="homeTypeFilter" onchange="resetHomePageAndRender()"
+            class="px-2.5 py-2 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none truncate">
+            <option value="">All Categories</option>
+          </select>
+          <select id="homeAvailFilter" onchange="resetHomePageAndRender()"
+            class="px-2.5 py-2 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+            <option value="ALL">All Status</option>
+            <option value="AVAIL">Available Only</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Compact App Banner & Horizontal Quick Tiles -->
+      <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-4 rounded-2xl shadow-sm space-y-3">
+        <div class="flex items-start justify-between gap-2">
+          <div class="space-y-1 min-w-0">
+            <h2 id="homeHeroTitle" class="text-base sm:text-2xl font-extrabold leading-snug truncate">
+              ജ്ഞാനോദയ ആർട്സ് &amp; സ്പോർട്സ് ക്ലബ്ബ് ലൈബ്രറി
             </h2>
-            <p id="homeAboutText" class="text-slate-300 text-xs sm:text-base leading-relaxed">
+            <p id="homeAboutText" class="text-[11px] sm:text-xs text-slate-300 line-clamp-2 leading-relaxed">
               നമ്മുടെ നാടിന്റെ സാംസ്കാരികവും കായികവുമായ മുന്നേറ്റത്തിനൊപ്പം വായനയുടെ പുതിയ ലോകം തുറന്നിടുന്ന ജ്ഞാനോദയ ലൈബ്രറി.
             </p>
-            <div class="flex flex-wrap gap-2.5 pt-1">
-              <a href="#catalogSection" class="px-5 py-2.5 bg-indigo-500 hover:bg-indigo-600 text-white text-xs sm:text-sm font-semibold rounded-xl shadow-lg transition">
-                പുസ്തകങ്ങൾ തിരയുക
-              </a>
-              <button onclick="openUnifiedAuth('userLogin')" class="px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-semibold rounded-xl transition">
-                Login
-              </button>
-            </div>
+          </div>
+          <button onclick="openUnifiedAuth('userLogin')"
+            class="px-3 py-1.5 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white text-[11px] font-bold shrink-0">
+            History
+          </button>
+        </div>
+
+        <!-- Horizontal Scrollable Quick Stat Pills (Flipkart Strip Style) -->
+        <div class="grid grid-cols-4 gap-1.5 sm:gap-3 pt-1 text-center">
+          <div onclick="filterHomeAvailability('ALL')"
+            class="cursor-pointer bg-white/10 hover:bg-white/15 rounded-xl p-2 border border-white/10 transition">
+            <p class="text-sm sm:text-xl font-extrabold text-indigo-300" id="homeTotalBooks">0</p>
+            <p class="text-[10px] text-slate-300 truncate">ആകെ ബുക്ക്</p>
           </div>
 
-          <div class="lg:col-span-5 grid grid-cols-2 gap-3">
-            <div onclick="filterHomeAvailability('ALL')" class="cursor-pointer bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/10 p-4 rounded-2xl transition">
-              <p class="text-2xl sm:text-3xl font-bold text-indigo-300" id="homeTotalBooks">0</p>
-              <p class="text-[11px] text-slate-300 mt-1">ആകെ പുസ്തകങ്ങൾ</p>
-            </div>
-            <!-- Clickable Available Books Card -->
-            <div onclick="openAvailableBooksModal()" class="cursor-pointer bg-emerald-500/15 hover:bg-emerald-500/25 backdrop-blur-md border border-emerald-400/30 p-4 rounded-2xl transition group">
-              <div class="flex justify-between items-start">
-                <p class="text-2xl sm:text-3xl font-bold text-emerald-300" id="homeAvailBooks">0</p>
-                <span class="text-[10px] bg-emerald-400/20 text-emerald-200 px-2 py-0.5 rounded-full group-hover:translate-x-0.5 transition">View &rarr;</span>
-              </div>
-              <p class="text-[11px] text-emerald-100 font-semibold mt-1">ഇപ്പോൾ ലഭ്യമായവ (Click)</p>
-            </div>
-            <div class="bg-white/10 backdrop-blur-md border border-white/10 p-4 rounded-2xl">
-              <p class="text-2xl sm:text-3xl font-bold text-amber-300" id="homeMembersCount">0</p>
-              <p class="text-[11px] text-slate-300 mt-1">സജീവ അംഗങ്ങൾ</p>
-            </div>
-            <div class="bg-white/10 backdrop-blur-md border border-white/10 p-4 rounded-2xl">
-              <p class="text-base sm:text-lg font-bold text-white" id="homeLoanDaysBadge">14 ദിവസം</p>
-              <p class="text-[11px] text-slate-300 mt-1">വായനാ കാലാവധി</p>
-            </div>
+          <div onclick="openAvailableBooksModal()"
+            class="cursor-pointer bg-emerald-500/20 hover:bg-emerald-500/30 rounded-xl p-2 border border-emerald-400/30 transition">
+            <p class="text-sm sm:text-xl font-extrabold text-emerald-300" id="homeAvailBooks">0</p>
+            <p class="text-[10px] text-emerald-100 font-bold truncate">ലഭ്യമായവ ›</p>
+          </div>
+
+          <div class="bg-white/10 rounded-xl p-2 border border-white/10">
+            <p class="text-sm sm:text-xl font-extrabold text-amber-300" id="homeMembersCount">0</p>
+            <p class="text-[10px] text-slate-300 truncate">അംഗങ്ങൾ</p>
+          </div>
+
+          <div class="bg-white/10 rounded-xl p-2 border border-white/10 flex flex-col justify-center">
+            <p class="text-xs sm:text-base font-extrabold text-white truncate" id="homeLoanDaysBadge">14 ദിവസം</p>
+            <p class="text-[10px] text-slate-300 truncate">കാലാവധി</p>
           </div>
         </div>
       </div>
 
-      <!-- Fast Image-Free Book Table Catalog (Optimized for 500+ Books) -->
-      <div id="catalogSection" class="max-w-7xl mx-auto px-3 sm:px-6 space-y-4 reveal">
-        <div class="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
-          <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
-            <div>
-              <h3 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">ലൈബ്രറിയിലെ പുസ്ത ശേഖരം</h3>
-              <p class="text-xs text-slate-500 dark:text-slate-400" id="homeBooksCountLabel">Loading books...</p>
-            </div>
-            <div class="flex flex-wrap gap-2">
-              <input type="text" id="homeSearch" oninput="resetHomePageAndRender()" placeholder="പുസ്തകം, എഴുത്തുകാരൻ, ID..."
-                class="px-3.5 py-2 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl flex-1 sm:w-64 outline-none focus:ring-2 focus:ring-indigo-500" />
-              <select id="homeTypeFilter" onchange="resetHomePageAndRender()" class="px-3 py-2 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl">
-                <option value="">All Categories</option>
-              </select>
-              <select id="homeAvailFilter" onchange="resetHomePageAndRender()" class="px-3 py-2 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl">
-                <option value="ALL">All Status</option>
-                <option value="AVAIL">Available Only</option>
-              </select>
-            </div>
+      <!-- Compact Book Catalog Feed -->
+      <div id="catalogSection" class="bg-white dark:bg-slate-900 p-3 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-3">
+        <div class="flex items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2">
+          <div>
+            <h3 class="text-sm sm:text-lg font-extrabold text-slate-900 dark:text-white">പുസ്തക പട്ടിക</h3>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400" id="homeBooksCountLabel">Loading books...</p>
           </div>
-
-          <!-- Responsive Table Container (No Images) -->
-          <div id="homeBooksTableWrapper" class="overflow-x-auto"></div>
-          <div id="homePagination" class="flex flex-wrap items-center justify-center gap-1.5 pt-2"></div>
+          <a href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'})" class="text-[11px] font-bold text-indigo-600 dark:text-indigo-400">
+            ↑ Search
+          </a>
         </div>
+
+        <div id="homeBooksTableWrapper" class="overflow-x-auto"></div>
+        <div id="homePagination" class="flex flex-wrap items-center justify-center gap-1 pt-2"></div>
       </div>
 
-      <!-- Leaderboards -->
-      <div class="max-w-7xl mx-auto px-3 sm:px-6 grid grid-cols-1 lg:grid-cols-2 gap-6 reveal">
-        <div class="bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+      <!-- Compact Top Charts (Most Read & Star Readers) -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-3.5">
+        <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-2.5">
           <div class="flex items-center justify-between">
-            <div>
-              <span class="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Reader's Choice</span>
-              <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">ഏറ്റവും കൂടുതൽ വായിച്ച പുസ്തകങ്ങൾ</h3>
-            </div>
-            <span class="text-2xl">📚</span>
+            <h3 class="text-xs sm:text-base font-extrabold text-slate-900 dark:text-white">📚 കൂടുതൽ വായിച്ച പുസ്തകങ്ങൾ</h3>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-300">Top</span>
           </div>
-          <div id="mostReadBooksList" class="space-y-2.5"></div>
+          <div id="mostReadBooksList" class="space-y-2"></div>
         </div>
 
-        <div class="bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+        <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-2.5">
           <div class="flex items-center justify-between">
-            <div>
-              <span class="text-[11px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">വായനാ പ്രോത്സാഹനം</span>
-              <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">മികച്ച വായനക്കാർ (Star Readers)</h3>
-            </div>
-            <span class="text-2xl">🏆</span>
+            <h3 class="text-xs sm:text-base font-extrabold text-slate-900 dark:text-white">🏆 മികച്ച വായനക്കാർ</h3>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300">Stars</span>
           </div>
-          <div id="topReadersList" class="space-y-2.5"></div>
+          <div id="topReadersList" class="space-y-2"></div>
         </div>
       </div>
 
-      <!-- Footer -->
-      <footer class="max-w-7xl mx-auto px-3 sm:px-6 reveal">
-        <div class="bg-slate-900 text-slate-300 rounded-3xl p-6 sm:p-8 space-y-6 border border-slate-800">
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <div class="lg:col-span-5 space-y-2.5">
-              <h4 id="ftrLibName" class="text-white font-bold text-base sm:text-lg">ജ്ഞാനോദയ ആർട്സ് & സ്പോർട്സ് ക്ലബ്ബ് ലൈബ്രറി</h4>
-              <p id="ftrAddress" class="text-xs text-slate-400 leading-relaxed"></p>
-              <p class="text-xs text-indigo-300 font-medium" id="ftrTimings"></p>
-              <p class="text-xs text-emerald-300 font-semibold" id="ftrPhone"></p>
-            </div>
-            <div class="lg:col-span-7 space-y-3">
-              <h5 class="text-xs font-bold uppercase tracking-wider text-slate-400">ഭാരവാഹികൾ & ലൈബ്രറി കമ്മിറ്റി</h5>
-              <div id="ftrBearersGrid" class="grid grid-cols-1 sm:grid-cols-3 gap-3"></div>
+      <!-- Compact App Footer -->
+      <footer class="bg-slate-900 text-slate-300 rounded-2xl p-4 sm:p-6 space-y-4 border border-slate-800">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <div class="lg:col-span-5 space-y-1.5">
+            <h4 id="ftrLibName" class="text-white font-bold text-sm sm:text-base">ജ്ഞാനോദയ ആർട്സ് &amp; സ്പോർട്സ് ക്ലബ്ബ് ലൈബ്രറി</h4>
+            <p id="ftrAddress" class="text-[11px] text-slate-400 leading-relaxed"></p>
+            <div class="flex flex-wrap gap-3 pt-0.5 text-[11px]">
+              <span class="text-indigo-300 font-medium" id="ftrTimings"></span>
+              <span class="text-emerald-300 font-semibold" id="ftrPhone"></span>
             </div>
           </div>
-         <div class="border-t border-slate-800 pt-4 text-center text-[11px] text-slate-500 space-y-1">
+          <div class="lg:col-span-7 space-y-2">
+            <h5 class="text-[10px] font-bold uppercase tracking-wider text-slate-400">ഭാരവാഹികൾ</h5>
+            <div id="ftrBearersGrid" class="grid grid-cols-1 sm:grid-cols-3 gap-2"></div>
+          </div>
+        </div>
+        <div class="border-t border-slate-800 pt-3 text-center text-[10px] text-slate-500 space-y-0.5">
             <p>&copy; 2026 ജ്ഞാനോദയ ആർട്സ് &amp; സ്പോർട്സ് ക്ലബ്ബ് ലൈബ്രറി • Digital Library System</p>
-            <p class="text-[10px] text-slate-500/90">
-              Developed by <span class="text-slate-400 font-semibold">Midhun</span> • <span class="font-mono text-indigo-400/90">v1.0</span>
-            </p>
+            <p id="ftrDevelopedBy">Developed by <span class="text-slate-400 font-semibold">Midhun Vijay</span> • <span class="font-mono text-indigo-400">v2.0</span></p>
           </div>
-        </div>
       </footer>
-    </section>
+     </section>
 
     <!-- 2. MEMBER DASHBOARD -->
     <section id="view_member" class="hidden max-w-[1680px] mx-auto px-3 sm:px-6 py-5 space-y-5">
