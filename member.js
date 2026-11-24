@@ -30,6 +30,10 @@ function renderMemberDashboard() {
   setTxt('memDashName', memName);
   setTxt('memDashDetails', `${u.Phone || ''} • ${u.Address || ''}`);
 
+  if (u.mustChangePass) {
+    showToast("ദയവായി 'Digital ID & Password' ടാബിൽ പോയി പുതിയ പാസ്‌വേഡ് സെറ്റ് ചെയ്യുക.", true);
+  }
+
   const myTxns = STATE.transactions.filter(t => String(t.Member_ID || '').trim() === memId);
   const myOrders = STATE.orders.filter(o => String(o.Member_ID || '').trim() === memId);
 
