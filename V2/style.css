@@ -1,5 +1,11 @@
+html, body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
 body {
   font-family: 'Plus Jakarta Sans', 'Noto Sans Malayalam', sans-serif;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .glass {
@@ -11,7 +17,7 @@ body {
   background: rgba(15, 23, 42, 0.90);
 }
 
-/* Mobile App Mode Shell */
+/* ==================== MOBILE APP MODE SHELL ==================== */
 body.mobile-app-mode {
   background-color: #cbd5e1;
 }
@@ -25,11 +31,100 @@ body.mobile-app-mode #appShell {
   margin: 0 auto;
   min-height: 100vh;
   box-shadow: 0 0 45px rgba(15, 23, 42, 0.22);
-  padding-bottom: 76px;
+  padding-bottom: 82px;
   position: relative;
 }
 
-/* Smooth Scroll Reveal */
+/* Keep top bar clean and non-crowded inside 460px App Mode */
+body.mobile-app-mode header .max-w-7xl,
+body.mobile-app-mode header .max-w-\[1680px\] {
+  padding-left: 0.625rem !important;
+  padding-right: 0.625rem !important;
+}
+
+body.mobile-app-mode #hdrTagline,
+body.mobile-app-mode #viewToggleLabel {
+  display: none !important;
+}
+
+body.mobile-app-mode #hdrLibName {
+  font-size: 0.75rem !important;
+  max-width: 85px;
+}
+
+/* Prevent multi-column squeezing inside narrow 460px App Mode */
+body.mobile-app-mode .lg\:col-span-5,
+body.mobile-app-mode .lg\:col-span-7,
+body.mobile-app-mode .lg\:col-span-12 {
+  grid-column: span 12 / span 12 !important;
+}
+
+body.mobile-app-mode #ftrBearersGrid {
+  grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+}
+
+body.mobile-app-mode #ftrBearersGrid > div {
+  word-break: break-word;
+}
+
+/* Hide website footer & extra clutter in App Mode */
+body.mobile-app-mode footer {
+  display: none !important;
+}
+
+/* Native App Top Header Bar */
+body.mobile-app-mode header {
+  border-bottom: 1px solid rgba(226, 232, 240, 0.7);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+}
+
+/* Clean App-like Scrollbars in App Mode */
+body.mobile-app-mode ::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
+
+/* ==================== HEADER & FOOTER OVERFLOW FIXES ==================== */
+header .max-w-7xl,
+header .max-w-\[1680px\] {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+header .max-w-7xl::-webkit-scrollbar,
+header .max-w-\[1680px\]::-webkit-scrollbar {
+  display: none;
+}
+
+#loggedInNavBtns .desktop-only {
+  display: none !important;
+}
+
+#loggedUserBadge {
+  max-width: 65px !important;
+}
+
+#ftrBearersGrid {
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)) !important;
+}
+
+#ftrBearersGrid > div {
+  min-width: 0;
+  word-wrap: break-word;
+}
+
+#view_home > div,
+#view_member > div,
+#view_admin > div {
+  max-width: 100%;
+}
+
+/* ==================== INTERACTION & ANIMATIONS ==================== */
+button:active {
+  transform: scale(0.96);
+  transition: transform 0.08s ease;
+}
+
 .reveal {
   opacity: 0;
   transform: translateY(16px);
@@ -72,6 +167,71 @@ body.mobile-app-mode #appShell {
 .dark .skeleton {
   background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
   background-size: 800px 100%;
+}
+
+/* Native Bottom-Sheet Style Modals on Mobile & App Mode */
+body.mobile-app-mode .fixed.inset-0 {
+  align-items: flex-end !important;
+  padding: 0 !important;
+}
+
+body.mobile-app-mode .fixed.inset-0 > div {
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-top-left-radius: 1.75rem !important;
+  border-top-right-radius: 1.75rem !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  animation: slideUpSheet 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (max-width: 640px) {
+  .fixed.inset-0 {
+    align-items: flex-end !important;
+    padding: 0 !important;
+  }
+
+  .fixed.inset-0 > div {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border-top-left-radius: 1.75rem !important;
+    border-top-right-radius: 1.75rem !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    animation: slideUpSheet 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  input, select, textarea {
+    font-size: 16px !important; /* Prevents auto-zoom on mobile */
+  }
+
+  main {
+    padding-bottom: 5.5rem !important;
+  }
+}
+
+@media (max-width: 768px) {
+  #view_home {
+    gap: 0.75rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+}
+
+@keyframes slideUpSheet {
+  from {
+    transform: translateY(100%);
+    opacity: 0.7;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Crisp Bottom Navigation Bar */
+#mobileBottomNav {
+  box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.06);
+  padding-bottom: env(safe-area-inset-bottom, 8px);
 }
 
 @media print {
