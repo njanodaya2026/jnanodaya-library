@@ -20,7 +20,7 @@
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Malayalam:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="css/style.css" />
 
   <!-- Libraries: Charts, Excel Export, PDF Export, QR Code -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -245,8 +245,11 @@
               <div id="ftrBearersGrid" class="grid grid-cols-1 sm:grid-cols-3 gap-3"></div>
             </div>
           </div>
-          <div class="border-t border-slate-800 pt-4 text-center text-[11px] text-slate-500">
-            &copy; 2026 ജ്ഞാനോദയ ആർട്സ് & സ്പോർട്സ് ക്ലബ്ബ് ലൈബ്രറി • Digital Library System
+         <div class="border-t border-slate-800 pt-4 text-center text-[11px] text-slate-500 space-y-1">
+            <p>&copy; 2026 ജ്ഞാനോദയ ആർട്സ് &amp; സ്പോർട്സ് ക്ലബ്ബ് ലൈബ്രറി • Digital Library System</p>
+            <p class="text-[10px] text-slate-500/90">
+              Developed by <span class="text-slate-400 font-semibold">Midhun</span> • <span class="font-mono text-indigo-400/90">v1.0</span>
+            </p>
           </div>
         </div>
       </footer>
@@ -631,6 +634,10 @@
                   <input type="text" id="cmsTagline" required placeholder="Tagline *" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
                 </div>
                 <input type="url" id="cmsLogoUrl" placeholder="Library Logo Image URL (Optional - e.g. https://...)" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+                <label class="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 cursor-pointer text-xs font-semibold">
+                  <input type="checkbox" id="cmsAllowHomeDelivery" checked class="w-4 h-4 rounded accent-indigo-600" />
+                  <span>🏠 Allow Home Delivery Option (ഹോം ഡെലിവറി ഓപ്ഷൻ അനുവദിക്കുക)</span>
+                </label>
                 <input type="text" id="cmsNotice" placeholder="Scrolling Notice Message" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
                 <textarea id="cmsAbout" rows="2" placeholder="About Library" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl"></textarea>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
@@ -818,7 +825,7 @@
           <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer text-xs font-bold">
             <input type="radio" name="grDelivMode" value="Direct Pickup" checked /> 🏢 Direct Pickup
           </label>
-          <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer text-xs font-bold">
+          <label id="grHomeDeliveryLabel" class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer text-xs font-bold">
             <input type="radio" name="grDelivMode" value="Home Delivery" /> 🏠 Home Delivery
           </label>
         </div>
@@ -882,7 +889,7 @@
           <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer text-xs font-bold">
             <input type="radio" name="cartDelivMode" value="Direct Pickup" checked /> 🏢 Direct Pickup
           </label>
-          <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer text-xs font-bold">
+         <label id="cartHomeDeliveryLabel" class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer text-xs font-bold">
             <input type="radio" name="cartDelivMode" value="Home Delivery" /> 🏠 Home Delivery
           </label>
         </div>
@@ -1073,10 +1080,10 @@
   </div>
 
   <!-- Modular JS Files -->
-  <script src="config.js"></script>
-  <script src="api.js"></script>
-  <script src="home.js"></script>
-  <script src="member.js"></script>
-  <script src="admin.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/home.js"></script>
+  <script src="js/member.js"></script>
+  <script src="js/admin.js"></script>
 </body>
 </html>
