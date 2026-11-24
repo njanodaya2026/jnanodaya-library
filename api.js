@@ -432,7 +432,7 @@ async function postAction(payload) {
       return rpcRes || { status: 'error', message: 'Failed to create member' };
     }
 
-    if (action === 'updateMember') {
+if (action === 'updateMember') {
       const { error } = await sb.from('members').update({
         name: String(data.Name || '').trim(),
         phone: String(data.Phone || '').trim(),
@@ -444,6 +444,13 @@ async function postAction(payload) {
       return { status: 'success', message: 'Member updated!' };
     }
 
+    if (action === 'adminResetMemberPin') {
+      const { data: rpcRes, error } = await sb.rpc('secure_admin_reset_member_pin', {
+        p_member_id: payload.memberId
+      });
+      if (error) return { status: 'error', message: error.message };
+      return rpcRes || { status: 'error', message: 'PIN reset failed' };
+    }
     // 6. Orders, Secure Issue & Return
     if (action === 'placeBatchOrder') {
       const { data: rpcRes, error } = await sb.rpc('secure_member_action', {
