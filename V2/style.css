@@ -346,3 +346,64 @@ body.mobile-app-mode .fixed.inset-0 > div {
   body { background: white !important; color: black !important; }
   #appShell { max-width: 100% !important; box-shadow: none !important; }
 }
+/* ==================== FIX ADMIN MENU & NARROW CARDS IN APP / MOBILE MODE ==================== */
+body.mobile-app-mode #view_admin > div,
+@media (max-width: 1023px) {
+  #view_admin > div {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+  }
+
+  /* Make the top horizontal tab bar full width & easy to scroll */
+  #view_admin aside.desktop-only {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    gap: 0.4rem !important;
+    padding: 0.45rem !important;
+    position: sticky !important;
+    top: 4rem !important;
+    z-index: 25 !important;
+    border-radius: 1rem !important;
+    scrollbar-width: none;
+  }
+
+  #view_admin aside.desktop-only::-webkit-scrollbar {
+    display: none;
+  }
+
+  #view_admin aside.desktop-only > p {
+    display: none !important;
+  }
+
+  #view_admin aside.desktop-only .a-tab {
+    width: auto !important;
+    flex: 0 0 auto !important;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.75rem !important;
+    white-space: nowrap !important;
+    gap: 0.35rem !important;
+  }
+
+  /* Make right content area full width */
+  #view_admin .lg\:col-span-9 {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Prevent 2-column stat/chart cards from becoming overly tall & narrow */
+  #aSec_overview .grid-cols-2,
+  #aSec_overview .grid-cols-1.md\:grid-cols-12 {
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+    gap: 0.65rem !important;
+  }
+
+  #aSec_overview .h-52 {
+    height: 13rem !important;
+  }
+}
