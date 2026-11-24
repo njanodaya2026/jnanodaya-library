@@ -48,6 +48,8 @@ function renderAdminDashboard() {
     document.getElementById('cmsLibName').value = c.libraryName || '';
     document.getElementById('cmsTagline').value = c.tagline || '';
     if (document.getElementById('cmsLogoUrl')) document.getElementById('cmsLogoUrl').value = c.logoUrl || '';
+    const hdEl = document.getElementById('cmsAllowHomeDelivery');
+    if (hdEl) hdEl.checked = c.allowHomeDelivery !== false;
     document.getElementById('cmsNotice').value = c.noticeTicker || '';
     document.getElementById('cmsAbout').value = c.aboutText || '';
     document.getElementById('cmsTimings').value = c.timings || '';
@@ -475,7 +477,10 @@ function renderAdminUsers() {
         </div>
         <p class="text-xs text-slate-500 mt-0.5">📞 ${esc(m.Phone)} • ${esc(m.Address)}</p>
       </div>
-      <button data-mem-id="${esc(m.Member_ID)}" class="js-edit-mem-btn px-2.5 py-1 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-xs font-semibold">Edit</button>
+      <div class="flex items-center gap-1.5">
+        <button data-mem-id="${esc(m.Member_ID)}" class="js-reset-pin-btn px-2.5 py-1 bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 rounded-lg text-xs font-semibold">Reset PIN</button>
+        <button data-mem-id="${esc(m.Member_ID)}" class="js-edit-mem-btn px-2.5 py-1 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-xs font-semibold">Edit</button>
+      </div>
     </div>
   `).join('');
 
@@ -483,6 +488,32 @@ function renderAdminUsers() {
     btn.addEventListener('click', () => {
       const m = STATE.members.find(x => x.Member_ID === btn.getAttribute('data-mem-id'));
       if (m) openEditMemberModal(m);
+    });
+  });
+
+  container.querySelectorAll('.js-reset-pin-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const m = STATE.members.find(x => x.Member_ID === btn.getAttribute('data-mem-id'));
+      if (!m) return;
+      showCustomDialog({
+        title: "Reset Member PIN",
+        message: `"<strong>${esc(m.Name)}</strong>" (${esc(m.Member_ID)})-ന്റെ PIN റീസെറ്റ് ചെയ്ത് പുതിയ 6-അക്ക Temporary PIN ഉണ്ടാക്കണോ?`,
+        confirmText: "Reset PIN",
+        onConfirm: async () => {
+          const res = await postAction({ action: 'adminResetMemberPin', memberId: m.Member_ID });
+          if (res.status === 'success') {
+            showCustomDialog({
+              title: "New Temporary PIN",
+              message: `<strong>${esc(res.memberName || m.Name)}</strong> (${esc(m.Member_ID)})<br>New PIN: <strong class="font-mono text-base text-indigo-600">${esc(res.newPin)}</strong><br><span class="text-xs text-slate-500">ഈ PIN അംഗത്തിന് നൽകുക (ആദ്യ ലോഗിനിൽ പുതിയ പാസ്‌വേഡ് മാറ്റണം).</span>`,
+              confirmText: "OK",
+              isAlertOnly: true
+            });
+            fetchAllData();
+          } else {
+            showToast(res.message, true);
+          }
+        }
+      });
     });
   });
 }
@@ -706,6 +737,7 @@ async function handleSaveCms(e) {
     libraryName: document.getElementById('cmsLibName').value.trim(),
     tagline: document.getElementById('cmsTagline').value.trim(),
     logoUrl: rawLogo,
+    allowHomeDelivery: document.getElementById('cmsAllowHomeDelivery')?.checked !== false,
     noticeTicker: document.getElementById('cmsNotice').value.trim(),
     aboutText: document.getElementById('cmsAbout').value.trim(),
     timings: document.getElementById('cmsTimings').value.trim(),
@@ -725,7 +757,6 @@ async function handleSaveCms(e) {
     showToast(res.message, true);
   }
 }
-
 async function handleSaveSettings(e) {
   e.preventDefault();
   const data = {
