@@ -33,8 +33,20 @@ function applyCmsToHomePage() {
       <a href="tel:${esc(b.phone)}" class="text-xs text-slate-400 hover:text-emerald-300 mt-0.5 inline-block">📞 ${esc(b.phone)}</a>
     </div>
   `).join('');
-}
 
+  const homeDelivEnabled = c.allowHomeDelivery !== false;
+  const grHd = document.getElementById('grHomeDeliveryLabel');
+  const cartHd = document.getElementById('cartHomeDeliveryLabel');
+  if (grHd) grHd.classList.toggle('hidden', !homeDelivEnabled);
+  if (cartHd) cartHd.classList.toggle('hidden', !homeDelivEnabled);
+
+  if (!homeDelivEnabled) {
+    const grDirect = document.querySelector('input[name="grDelivMode"][value="Direct Pickup"]');
+    const cartDirect = document.querySelector('input[name="cartDelivMode"][value="Direct Pickup"]');
+    if (grDirect) grDirect.checked = true;
+    if (cartDirect) cartDirect.checked = true;
+  }
+}
 function getBookRatingInfo(bookId) {
   const list = STATE.reviews.filter(r => r.Book_ID === bookId);
   if (list.length === 0) return { avg: 0, count: 0 };
