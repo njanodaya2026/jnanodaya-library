@@ -139,27 +139,37 @@ function renderAuditLogs() {
 // ==================== AUTOCOMPLETE DROPDOWNS (XSS SAFE) ====================
 
 function filterMemberDropdown() {
-  const q = document.getElementById('issMemSearch').value.toLowerCase().trim();
+  const input = document.getElementById('issMemSearch');
   const dropdown = document.getElementById('issMemDropdown');
-  const active = STATE.members.filter(m => m.Status !== 'Rejected');
-  const matches = active.filter(m => !q || String(m.Name).toLowerCase().includes(q) || String(m.Member_ID).toLowerCase().includes(q) || String(m.Phone).includes(q));
+  if (!input || !dropdown) return;
 
-  dropdown.innerHTML = matches.length === 0
-    ? `<div class="p-3 text-xs text-slate-400">No members found</div>`
-    : matches.map(m => `
-      <div data-mem-id="${esc(m.Member_ID)}"
-        class="js-dd-mem px-3 py-2.5 hover:bg-indigo-50 dark:hover:bg-slate-700 cursor-pointer flex justify-between items-center text-xs">
-        <div><p class="font-bold">${esc(m.Name)}</p><p class="text-slate-500">${esc(m.Phone)}</p></div>
-        <span class="font-mono font-semibold text-indigo-600">${esc(m.Member_ID)}</span>
-      </div>
+  const q = input.value.trim().toLowerCase();
+  // Show suggestions ONLY when user starts typing spelling/number
+  if (!q) {
+    dropdown.classList.add('hidden');
+    dropdown.innerHTML = '';
+    return;
+  }
+
+  const matches = (STATE.users || [])
+    .filter(u => u.status !== 'Rejected' && (
+      (u.name || '').toLowerCase().includes(q) ||
+      (u.phone || '').includes(q) ||
+      (u.id || '').toLowerCase().includes(q)
+    ))
+    .slice(0, 12);
+
+  if (!matches.length) {
+    dropdown.innerHTML = `<div class="p-3 text-xs text-slate-400">അംഗത്തെ കണ്ടെത്തിയില്ല</div>`;
+  } else {
+    dropdown.innerHTML = matches.map(u => `
+      <button type="button" onclick="selectMemberForIssue('${u.id}')"
+        class="w-full text-left px-3 py-2 text-xs hover:bg-indigo-50 dark:hover:bg-slate-700 flex justify-between items-center">
+        <span class="font-bold text-slate-800 dark:text-white">${u.name}</span>
+        <span class="text-slate-400 font-mono">${u.id} • ${u.phone}</span>
+      </button>
     `).join('');
-
-  dropdown.querySelectorAll('.js-dd-mem').forEach(el => {
-    el.addEventListener('click', () => {
-      const m = STATE.members.find(x => x.Member_ID === el.getAttribute('data-mem-id'));
-      if (m) selectMemberForIssue(m.Member_ID, m.Name, m.Phone);
-    });
-  });
+  }
   dropdown.classList.remove('hidden');
 }
 
