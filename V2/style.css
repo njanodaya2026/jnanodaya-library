@@ -33,11 +33,11 @@ body.mobile-app-mode #appShell {
   box-shadow: 0 0 45px rgba(15, 23, 42, 0.22);
   padding-bottom: 82px;
   position: relative;
+  overflow-x: hidden;
 }
 
-/* Keep top bar clean and non-crowded inside 460px App Mode */
-body.mobile-app-mode header .max-w-7xl,
-body.mobile-app-mode header .max-w-\[1680px\] {
+/* Keep top bar clean inside 460px App Mode */
+body.mobile-app-mode header > div {
   padding-left: 0.625rem !important;
   padding-right: 0.625rem !important;
   gap: 0.25rem !important;
@@ -53,107 +53,110 @@ body.mobile-app-mode #hdrLibName {
   max-width: 85px;
 }
 
-/* Prevent multi-column squeezing inside narrow 460px App Mode */
+/* Prevent multi-column squeezing inside 460px App Mode */
 body.mobile-app-mode .lg\:col-span-5,
 body.mobile-app-mode .lg\:col-span-7,
 body.mobile-app-mode .lg\:col-span-12 {
   grid-column: span 12 / span 12 !important;
 }
 
-body.mobile-app-mode #ftrBearersGrid {
-  grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+body.mobile-app-mode #view_home .lg\:grid-cols-2 {
+  grid-template-columns: minmax(0, 1fr) !important;
 }
 
-body.mobile-app-mode #ftrBearersGrid > div {
-  word-break: break-word;
+body.mobile-app-mode #homeSearch {
+  width: 100% !important;
+  flex: 1 1 100% !important;
 }
 
-/* Hide website footer in App Mode */
 body.mobile-app-mode footer {
   display: none !important;
 }
 
-/* Native App Top Header Bar */
 body.mobile-app-mode header {
   border-bottom: 1px solid rgba(226, 232, 240, 0.7);
   box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
 }
 
-/* Clean App-like Scrollbars in App Mode */
 body.mobile-app-mode ::-webkit-scrollbar {
   width: 0px;
   height: 0px;
 }
 
-/* ==================== ADMIN TABS VISIBLE IN MOBILE & APP MODE ==================== */
-@media (max-width: 1023px) {
-  #view_admin aside.desktop-only {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    gap: 0.4rem !important;
-    padding: 0.5rem !important;
-    position: sticky !important;
-    top: 4rem !important;
-    z-index: 25 !important;
-    border-radius: 1rem !important;
-    scrollbar-width: none;
-  }
-
-  #view_admin aside.desktop-only::-webkit-scrollbar {
-    display: none;
-  }
-
-  #view_admin aside.desktop-only > p {
-    display: none !important;
-  }
-
-  #view_admin aside.desktop-only .a-tab {
-    width: auto !important;
-    flex-shrink: 0 !important;
-    padding: 0.55rem 0.85rem !important;
-    font-size: 0.75rem !important;
-    white-space: nowrap !important;
-  }
-}
-
-body.mobile-app-mode #view_admin aside.desktop-only {
-  display: flex !important;
-  flex-direction: row !important;
-  flex-wrap: nowrap !important;
-  overflow-x: auto !important;
-  gap: 0.4rem !important;
-  padding: 0.5rem !important;
-  border-radius: 1rem !important;
-  scrollbar-width: none;
-}
-
-body.mobile-app-mode #view_admin aside.desktop-only::-webkit-scrollbar {
-  display: none;
-}
-
-body.mobile-app-mode #view_admin aside.desktop-only > p {
+/* ==================== CLEAN MOBILE ADMIN LAYOUT (FIXED HIDDEN TABS!) ==================== */
+/* CRITICAL: Always keep .hidden truly hidden so only the selected tab shows */
+.hidden,
+#view_admin .a-sec.hidden {
   display: none !important;
 }
 
-body.mobile-app-mode #view_admin aside.desktop-only .a-tab {
-  width: auto !important;
-  flex-shrink: 0 !important;
-  padding: 0.55rem 0.8rem !important;
-  font-size: 0.72rem !important;
-  white-space: nowrap !important;
+@media (max-width: 1023px) {
+  #mobileAdminBar {
+    display: block !important;
+  }
+
+  #view_admin aside.desktop-only {
+    display: none !important;
+  }
+
+  #view_admin .grid:not(.hidden),
+  #view_admin .grid-cols-2:not(.hidden),
+  #view_admin .grid-cols-3:not(.hidden),
+  #view_admin .lg\:grid-cols-12:not(.hidden),
+  #view_admin .md\:grid-cols-12:not(.hidden) {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 0.75rem !important;
+  }
+
+  #view_admin .lg\:col-span-3,
+  #view_admin .lg\:col-span-4,
+  #view_admin .lg\:col-span-5,
+  #view_admin .lg\:col-span-7,
+  #view_admin .lg\:col-span-9,
+  #view_admin .lg\:col-span-12,
+  #view_admin .md\:col-span-6 {
+    grid-column: span 1 / span 1 !important;
+    width: 100% !important;
+  }
+}
+
+body.mobile-app-mode #mobileAdminBar {
+  display: block !important;
+}
+
+body.mobile-app-mode #view_admin aside.desktop-only {
+  display: none !important;
+}
+
+body.mobile-app-mode #view_admin .grid:not(.hidden),
+body.mobile-app-mode #view_admin .grid-cols-2:not(.hidden),
+body.mobile-app-mode #view_admin .grid-cols-3:not(.hidden),
+body.mobile-app-mode #view_admin .lg\:grid-cols-12:not(.hidden),
+body.mobile-app-mode #view_admin .md\:grid-cols-12:not(.hidden) {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 0.75rem !important;
+}
+
+body.mobile-app-mode #view_admin .lg\:col-span-3,
+body.mobile-app-mode #view_admin .lg\:col-span-4,
+body.mobile-app-mode #view_admin .lg\:col-span-5,
+body.mobile-app-mode #view_admin .lg\:col-span-7,
+body.mobile-app-mode #view_admin .lg\:col-span-9,
+body.mobile-app-mode #view_admin .lg\:col-span-12,
+body.mobile-app-mode #view_admin .md\:col-span-6 {
+  grid-column: span 1 / span 1 !important;
+  width: 100% !important;
 }
 
 /* ==================== HEADER & FOOTER OVERFLOW FIXES ==================== */
-header .max-w-7xl,
-header .max-w-\[1680px\] {
+header > div {
   overflow-x: auto;
   scrollbar-width: none;
 }
 
-header .max-w-7xl::-webkit-scrollbar,
-header .max-w-\[1680px\]::-webkit-scrollbar {
+header > div::-webkit-scrollbar {
   display: none;
 }
 
@@ -195,8 +198,7 @@ header .max-w-\[1680px\]::-webkit-scrollbar {
     min-width: 0;
   }
 
-  header .max-w-7xl,
-  header .max-w-\[1680px\] {
+  header > div {
     padding-left: 0.5rem !important;
     padding-right: 0.5rem !important;
     gap: 0.25rem !important;
@@ -258,7 +260,6 @@ button:active {
   transform: translateY(0);
 }
 
-/* Notice Ticker */
 @keyframes marquee {
   0% { transform: translateX(100%); }
   100% { transform: translateX(-100%); }
@@ -274,7 +275,6 @@ button:active {
   animation-play-state: paused;
 }
 
-/* Skeleton Shimmer */
 @keyframes shimmer {
   0% { background-position: -400px 0; }
   100% { background-position: 400px 0; }
@@ -291,33 +291,36 @@ button:active {
   background-size: 800px 100%;
 }
 
-/* Native Bottom-Sheet Style Modals on Mobile & App Mode */
-body.mobile-app-mode .fixed.inset-0 {
+/* ==================== NATIVE BOTTOM-SHEET MODALS (FITS APP SHELL WIDTH!) ==================== */
+body.mobile-app-mode .fixed.inset-0:not(.hidden) {
   align-items: flex-end !important;
+  justify-content: center !important;
   padding: 0 !important;
 }
 
-body.mobile-app-mode .fixed.inset-0 > div {
+body.mobile-app-mode .fixed.inset-0:not(.hidden) > div {
   border-bottom-left-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
   border-top-left-radius: 1.75rem !important;
   border-top-right-radius: 1.75rem !important;
-  max-width: 100% !important;
-  margin: 0 !important;
+  width: 100% !important;
+  max-width: 460px !important;
+  margin: 0 auto !important;
   animation: slideUpSheet 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @media (max-width: 640px) {
-  .fixed.inset-0 {
+  .fixed.inset-0:not(.hidden) {
     align-items: flex-end !important;
     padding: 0 !important;
   }
 
-  .fixed.inset-0 > div {
+  .fixed.inset-0:not(.hidden) > div {
     border-bottom-left-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
     border-top-left-radius: 1.75rem !important;
     border-top-right-radius: 1.75rem !important;
+    width: 100% !important;
     max-width: 100% !important;
     margin: 0 !important;
     animation: slideUpSheet 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -345,65 +348,4 @@ body.mobile-app-mode .fixed.inset-0 > div {
   .no-print { display: none !important; }
   body { background: white !important; color: black !important; }
   #appShell { max-width: 100% !important; box-shadow: none !important; }
-}
-/* ==================== FIX ADMIN MENU & NARROW CARDS IN APP / MOBILE MODE ==================== */
-body.mobile-app-mode #view_admin > div,
-@media (max-width: 1023px) {
-  #view_admin > div {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 0.75rem !important;
-  }
-
-  /* Make the top horizontal tab bar full width & easy to scroll */
-  #view_admin aside.desktop-only {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    align-items: center !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow-x: auto !important;
-    gap: 0.4rem !important;
-    padding: 0.45rem !important;
-    position: sticky !important;
-    top: 4rem !important;
-    z-index: 25 !important;
-    border-radius: 1rem !important;
-    scrollbar-width: none;
-  }
-
-  #view_admin aside.desktop-only::-webkit-scrollbar {
-    display: none;
-  }
-
-  #view_admin aside.desktop-only > p {
-    display: none !important;
-  }
-
-  #view_admin aside.desktop-only .a-tab {
-    width: auto !important;
-    flex: 0 0 auto !important;
-    padding: 0.5rem 0.75rem !important;
-    font-size: 0.75rem !important;
-    white-space: nowrap !important;
-    gap: 0.35rem !important;
-  }
-
-  /* Make right content area full width */
-  #view_admin .lg\:col-span-9 {
-    width: 100% !important;
-    max-width: 100% !important;
-  }
-
-  /* Prevent 2-column stat/chart cards from becoming overly tall & narrow */
-  #aSec_overview .grid-cols-2,
-  #aSec_overview .grid-cols-1.md\:grid-cols-12 {
-    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
-    gap: 0.65rem !important;
-  }
-
-  #aSec_overview .h-52 {
-    height: 13rem !important;
-  }
 }
