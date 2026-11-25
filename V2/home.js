@@ -359,28 +359,29 @@ function handleBookRequestClick(bookId) {
   openModal('guestRequestModal');
 }
 
-function checkExistingPhoneHint() {
-  // Intentionally no-op for unauthenticated guests to prevent phone enumeration / privacy leak
-}
-function setUiScale(mode) {
-  document.documentElement.style.fontSize = '16px'; // Keeps Home Page & Header strictly normal!
-  const adminEl = document.getElementById('view_admin');
-  const zooms = { normal: '100%', large: '112%', xlarge: '122%' };
-  if (adminEl) {
-    adminEl.style.zoom = zooms[mode] || '100%';
-  }
-  localStorage.setItem('jnanodaya_ui_scale', mode);
+function checkExistingPhoneHint(phoneVal) {
+  const cleanPhone = (phoneVal || '').replace(/\D/g, '');
+  const banner = document.getElementById('grExistingMemberBanner');
+  const foundNameEl = document.getElementById('grFoundName');
+  const nameInput = document.getElementById('grName');
+  const addrInput = document.getElementById('grAddress');
 
-  ['normal', 'large', 'xlarge'].forEach(m => {
-    const btn = document.getElementById('scaleBtn_' + m);
-    if (btn) {
-      if (m === mode) {
-        btn.classList.add('bg-indigo-600', 'text-white');
-      } else {
-        btn.classList.remove('bg-indigo-600', 'text-white');
-      }
-    }
-  });
+  if (cleanPhone.length < 10) {
+    if (banner) banner.classList.add('hidden');
+    return;
+  }
+
+  const existingUser = (STATE.users || []).find(u => (u.phone || '').replace(/\D/g, '').endsWith(cleanPhone.slice(-10)));
+  if (existingUser) {
+    if (foundNameEl) foundNameEl.textContent = existingUser.name || '';
+    if (banner) banner.classList.remove('hidden');
+
+    // Auto-fill Name & Address automatically!
+    if (nameInput) nameInput.value = existingUser.name || '';
+    if (addrInput) addrInput.value = existingUser.address || '';
+  } else {
+    if (banner) banner.classList.add('hidden');
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
