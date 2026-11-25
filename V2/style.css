@@ -69,8 +69,21 @@ body.mobile-app-mode #homeSearch {
   flex: 1 1 100% !important;
 }
 
+/* Show clean compact footer in App Mode without any side clipping */
 body.mobile-app-mode footer {
-  display: none !important;
+  display: block !important;
+  padding-left: 0.75rem !important;
+  padding-right: 0.75rem !important;
+}
+
+body.mobile-app-mode footer > div {
+  padding: 1.15rem !important;
+  border-radius: 1.25rem !important;
+}
+
+body.mobile-app-mode #ftrBearersGrid {
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 0.5rem !important;
 }
 
 body.mobile-app-mode header {
