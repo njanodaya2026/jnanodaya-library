@@ -2,6 +2,11 @@ function switchAdminTab(tab) {
   document.querySelectorAll('.a-sec').forEach(el => el.classList.add('hidden'));
   document.getElementById('aSec_' + tab)?.classList.remove('hidden');
 
+  // Sync mobile dropdown selector
+  const mobSel = document.getElementById('mobileAdminTabSelect');
+  if (mobSel) mobSel.value = tab;
+
+  // Sync desktop sidebar buttons
   document.querySelectorAll('.a-tab').forEach(btn => {
     btn.className = "a-tab w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 flex justify-between items-center";
   });
@@ -9,6 +14,17 @@ function switchAdminTab(tab) {
   if (activeBtn) {
     activeBtn.className = "a-tab w-full text-left px-4 py-3 rounded-xl text-sm font-bold bg-slate-900 dark:bg-indigo-600 text-white flex justify-between items-center";
   }
+
+  // Sync bottom mobile nav active state if applicable
+  document.querySelectorAll('#mobileBottomNavInner button').forEach(btn => {
+    const isMatch = btn.getAttribute('onclick')?.includes(`'${tab}'`);
+    if (isMatch) {
+      btn.classList.add('text-indigo-600', 'dark:text-indigo-400', 'font-bold');
+      btn.classList.remove('text-slate-500');
+    } else {
+      btn.classList.remove('text-indigo-600', 'dark:text-indigo-400', 'font-bold');
+    }
+  });
 
   if (tab === 'registers') showRegister('stock');
   if (tab === 'overview') renderCategoryChart();
