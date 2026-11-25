@@ -121,7 +121,6 @@ function renderAuditLogs() {
 }
 
 // ==================== AUTOCOMPLETE DROPDOWNS (XSS SAFE) ====================
-
 function filterMemberDropdown() {
   const q = document.getElementById('issMemSearch').value.toLowerCase().trim();
   const dropdown = document.getElementById('issMemDropdown');
@@ -146,6 +145,7 @@ function filterMemberDropdown() {
   });
   dropdown.classList.remove('hidden');
 }
+
 
 function selectMemberForIssue(id, name, phone) {
   document.getElementById('issMemId').value = id;
