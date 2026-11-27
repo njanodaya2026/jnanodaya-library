@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ജ്ഞാനോദയ ആർട്സ് & സ്പോർട്സ് ക്ലബ്ബ് ലൈബ്രറി</title>
+  <script>
+    var tailwind = {
+      config: {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Plus Jakarta Sans"', '"Noto Sans Malayalam"', 'sans-serif'],
+              serif: ['"Noto Serif Malayalam"', 'Georgia', 'serif'],
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Malayalam:wght@400;500;600;700&family=Noto+Serif+Malayalam:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Libraries: Charts, Excel Export, PDF Export, QR Code -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+</head>
+<body class="bg-[#FCFAF6] dark:bg-[#0E1012] text-stone-800 dark:text-stone-100 min-h-screen transition-colors duration-200">
+
+<div id="appShell" class="bg-[#FCFAF6] dark:bg-[#0E1012] min-h-screen flex flex-col">
+
+  <!-- ==================== TOP HEADER ==================== -->
+  <header class="sticky top-0 z-30 glass border-b border-stone-200/80 dark:border-stone-800 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-8 h-16 flex items-center justify-between gap-2">
+      <div onclick="navigateTo('home')" class="flex items-center gap-3 cursor-pointer min-w-0">
+        <div id="hdrLogoContainer" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#143D32] text-amber-100 font-serif flex items-center justify-center font-bold text-base sm:text-lg shrink-0 overflow-hidden">
+          ജ്ഞാ
+        </div>
+        <div class="min-w-0">
+          <h1 id="hdrLibName" class="font-serif font-bold text-stone-900 dark:text-stone-100 text-xs sm:text-base truncate leading-tight">ജ്ഞാനോദയ ആർട്സ് & സ്പോർട്സ് ക്ലബ്ബ്</h1>
+          <p id="hdrTagline" class="text-[10px] sm:text-[11px] text-[#143D32] dark:text-emerald-400 font-medium truncate">ഗ്രന്ഥശാല & വായനശാല പോർട്ടൽ</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <button onclick="toggleDarkMode()" title="Dark/Light Theme"
+          class="p-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-600 dark:text-amber-300 transition">
+          <span id="themeIcon">🌙</span>
+        </button>
+
+        <button onclick="toggleViewportMode()" title="Desktop / Mobile App Mode"
+          class="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-200 flex items-center gap-1 transition">
+          <span id="viewToggleIcon">📱</span>
+          <span id="viewToggleLabel">App Mode</span>
+        </button>
+
+        <div class="hidden sm:flex items-center rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 overflow-hidden text-[11px] font-bold">
+          <button type="button" onclick="setUiScale('normal')" id="scaleBtn_normal" title="Normal Size" class="px-2 py-1.5 hover:bg-stone-100 dark:hover:bg-stone-700 transition">A</button>
+          <button type="button" onclick="setUiScale('large')" id="scaleBtn_large" title="Large Size" class="px-2 py-1.5 border-x border-stone-200 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-700 transition">A+</button>
+          <button type="button" onclick="setUiScale('xlarge')" id="scaleBtn_xlarge" title="Extra Large Size" class="px-2 py-1.5 hover:bg-stone-100 dark:hover:bg-stone-700 transition">A++</button>
+        </div>
+
+        <button id="hdrCartBtn" onclick="openModal('cartModal')" class="hidden relative p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950 text-[#143D32] dark:text-emerald-300">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+          <span id="hdrCartCount" class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-600 text-white text-[10px] font-bold flex items-center justify-center">0</span>
+        </button>
+
+        <button onclick="fetchAllData()" title="Sync Data" class="p-2 text-stone-500 dark:text-stone-400 hover:text-[#143D32] rounded-lg transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+        </button>
+
+        <div id="guestNavBtns">
+          <button onclick="openUnifiedAuth('userLogin')" class="px-4 py-2 text-xs sm:text-sm font-semibold bg-[#143D32] hover:bg-[#0E2B23] dark:bg-emerald-700 dark:hover:bg-emerald-600 text-white rounded-lg transition">
+            Sign In
+          </button>
+        </div>
+
+        <div id="loggedInNavBtns" class="hidden items-center gap-1.5">
+          <button onclick="goToDashboard()" class="desktop-only text-xs font-semibold px-3 py-2 bg-emerald-50 dark:bg-emerald-950 text-[#143D32] dark:text-emerald-300 rounded-lg">
+            Dashboard
+          </button>
+          <button onclick="openProfileView()" class="text-xs font-semibold px-2.5 py-2 bg-stone-100 dark:bg-stone-800 text-stone-800 dark:text-stone-200 rounded-lg flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span id="loggedUserBadge" class="max-w-[75px] truncate">Profile</span>
+          </button>
+          <button onclick="confirmLogout()" class="px-2.5 py-2 text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg">
+            Exit
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div id="topSyncBar" class="hidden fixed top-16 left-0 right-0 z-40 h-0.5 bg-emerald-100 dark:bg-stone-800 overflow-hidden">
+    <div class="h-full bg-[#143D32] dark:bg-emerald-500 animate-pulse w-full"></div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-20 sm:bottom-6 right-4 z-50 transform translate-y-28 opacity-0 transition-all duration-300 pointer-events-none max-w-xs sm:max-w-sm">
+    <div class="px-4 py-3 rounded-xl shadow-xl text-xs sm:text-sm font-medium text-white bg-stone-900 dark:bg-stone-800 flex items-center gap-2.5 border border-white/10">
+      <span id="toastIcon" class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
+      <span id="toastMsg"></span>
+    </div>
+  </div>
+
+  <!-- Custom Confirm / Alert Dialog -->
+  <div id="uiDialogModal" class="fixed inset-0 bg-stone-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-[#FCFAF6] dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl space-y-4 text-center">
+      <div class="space-y-1.5">
+        <h3 id="uiDialogTitle" class="font-serif font-bold text-lg text-stone-900 dark:text-white">Confirm</h3>
+        <p id="uiDialogBody" class="text-xs sm:text-sm text-stone-600 dark:text-stone-300 leading-relaxed"></p>
+      </div>
+      <div class="flex gap-2.5 pt-2">
+        <button id="uiDialogCancelBtn" onclick="closeModal('uiDialogModal')" class="flex-1 py-2.5 text-xs sm:text-sm font-semibold text-stone-600 dark:text-stone-300 bg-stone-100 dark:bg-stone-800 rounded-xl">Cancel</button>
+        <button id="uiDialogConfirmBtn" class="flex-1 py-2.5 text-xs sm:text-sm font-semibold text-white bg-[#143D32] dark:bg-emerald-700 rounded-xl">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <datalist id="categorySuggestionsList"></datalist>
+
+  <!-- ==================== MAIN VIEWS ==================== -->
+  <main class="flex-1">
+
+    <!-- 1. HOME PAGE (CLEAN EDGE-TO-EDGE EDITORIAL EDITION — ZERO BOXY CARDS) -->
+    <section id="view_home" class="hidden">
+      <!-- Slim Editorial Notice Ribbon -->
+      <div class="bg-[#143D32] text-amber-100/95 text-xs py-1.5 overflow-hidden">
+        <div class="animate-marquee font-medium tracking-wide" id="homeNoticeTicker">
+          ജ്ഞാനോദയ ആർട്സ് & സ്പോർട്സ് ക്ലബ്ബ് ലൈബ്രറിയിലേക്ക് സ്വാഗതം!
+        </div>
+      </div>
+
+      <!-- Edge-to-Edge Editorial Hero (No outer card box!) -->
+      <div class="border-b border-stone-200/90 dark:border-stone-800 bg-gradient-to-b from-[#F5F0E6] to-[#FCFAF6] dark:from-[#14171A] dark:to-[#0E1012]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-8 pt-8 pb-10 sm:pt-12 sm:pb-12">
+          <div class="max-w-3xl space-y-4">
+            <div class="flex flex-wrap items-center gap-2 text-xs">
+              <span class="font-semibold uppercase tracking-widest text-[#143D32] dark:text-emerald-400">ഗ്രന്ഥശാല & വായനശാല</span>
+              <span class="text-stone-300 dark:text-stone-700">•</span>
+              <span id="homeHeroTimingsPill" class="text-stone-600 dark:text-stone-400 font-medium">സായാഹ്ന വായനശാല</span>
+            </div>
+
+            <h2 id="homeHeroTitle" class="font-serif text-2xl sm:text-4xl lg:text-[42px] font-bold text-stone-900 dark:text-white leading-[1.22] tracking-tight">
+              ജ്ഞാനോദയ ആർട്സ് & സ്പോർട്സ് ക്ലബ്ബ് ലൈബ്രറി
+            </h2>
+
+            <p id="homeAboutText" class="text-stone-600 dark:text-stone-300 text-sm sm:text-base leading-relaxed max-w-2xl">
+              നമ്മുടെ നാടിന്റെ സാംസ്കാരികവും കായികവുമായ മുന്നേറ്റത്തിനൊപ്പം വായനയുടെ പുതിയ ലോകം തുറന്നിടുന്ന ജ്ഞാനോദയ ലൈബ്രറി.
+            </p>
+
+            <!-- Spotlight Search Bar directly in Hero -->
+            <div class="pt-2 flex flex-col sm:flex-row gap-2.5 max-w-2xl">
+              <div class="relative flex-1">
+                <svg class="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <input type="text" id="homeSearch" oninput="resetHomePageAndRender()" placeholder="പുസ്തകത്തിന്റെ പേര്, എഴുത്തുകാരൻ, Book ID..."
+                  class="w-full pl-10 pr-4 py-3 text-sm bg-white dark:bg-stone-900 border border-stone-300/90 dark:border-stone-700 rounded-xl shadow-xs outline-none focus:border-[#143D32] dark:focus:border-emerald-500 transition" />
+              </div>
+              <a href="#catalogSection" class="px-5 py-3 bg-[#143D32] hover:bg-[#0E2B23] dark:bg-emerald-700 dark:hover:bg-emerald-600 text-white text-sm font-semibold rounded-xl text-center transition shrink-0">
+                Browse Catalog
+              </a>
+              <button type="button" onclick="openUnifiedAuth('userLogin')" class="px-4 py-3 text-sm font-semibold text-[#143D32] dark:text-emerald-400 hover:bg-stone-200/60 dark:hover:bg-stone-800/70 rounded-xl transition shrink-0">
+                Member History &rarr;
+              </button>
+            </div>
+          </div>
+
+          <!-- Clean Hairline Metric Strip (No 4 separate boxes!) -->
+          <div class="mt-9 pt-6 border-t border-stone-200/80 dark:border-stone-800 grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-0 sm:divide-x divide-stone-200 dark:divide-stone-800">
+            <div onclick="filterHomeAvailability('ALL')" class="cursor-pointer sm:pr-6 group">
+              <p class="text-[11px] font-semibold uppercase tracking-wider text-stone-400">ആകെ ശേഖരം</p>
+              <p class="text-2xl sm:text-3xl font-bold text-stone-900 dark:text-white mt-1 group-hover:text-[#143D32] transition" id="homeTotalBooks">0</p>
+              <p class="text-xs text-stone-500 mt-0.5">പുസ്തകങ്ങൾ</p>
+            </div>
+
+            <div onclick="openAvailableBooksModal()" class="cursor-pointer sm:px-6 group">
+              <div class="flex items-center justify-between">
+                <p class="text-[11px] font-semibold uppercase tracking-wider text-emerald-800 dark:text-emerald-400">ഇപ്പോൾ ലഭ്യമായവ</p>
+              </div>
+              <div class="flex items-baseline gap-2 mt-1">
+                <p class="text-2xl sm:text-3xl font-bold text-[#143D32] dark:text-emerald-400" id="homeAvailBooks">0</p>
+                <span class="text-xs font-semibold text-amber-700 dark:text-amber-400 group-hover:translate-x-0.5 transition">View &rarr;</span>
+              </div>
+              <p class="text-xs text-stone-500 mt-0.5">നേരിട്ട് ഓർഡർ ചെയ്യാം</p>
+            </div>
+
+            <div class="sm:px-6">
+              <p class="text-[11px] font-semibold uppercase tracking-wider text-stone-400">വായനക്കാർ</p>
+              <p class="text-2xl sm:text-3xl font-bold text-stone-900 dark:text-white mt-1" id="homeMembersCount">0</p>
+              <p class="text-xs text-stone-500 mt-0.5">സജീവ അംഗങ്ങൾ</p>
+            </div>
+
+            <div class="sm:pl-6">
+              <p class="text-[11px] font-semibold uppercase tracking-wider text-stone-400">വായനാ കാലാവധി</p>
+              <p class="text-2xl sm:text-3xl font-bold text-stone-900 dark:text-white mt-1" id="homeLoanDaysBadge">14 ദിവസം</p>
+              <p class="text-xs text-stone-500 mt-0.5">സൗജന്യ അംഗത്വ സേവനം</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- New Arrivals Editorial Strip -->
+      <div id="homeNewArrivalsSection" class="hidden max-w-7xl mx-auto px-4 sm:px-8 pt-8 reveal">
+        <div class="flex items-baseline justify-between mb-3.5">
+          <div class="flex items-center gap-2.5">
+            <h3 class="font-serif text-base sm:text-lg font-bold text-stone-900 dark:text-white">പുതുതായി എത്തിയവ</h3>
+            <span class="text-[11px] font-semibold text-amber-800 dark:text-amber-400 bg-amber-100/80 dark:bg-amber-950/70 px-2 py-0.5 rounded-md">New Arrivals</span>
+          </div>
+          <span class="text-xs text-stone-400 hidden sm:inline">Latest additions to the shelf</span>
+        </div>
+        <div id="homeNewArrivalsList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3"></div>
+      </div>
+
+      <!-- Open Book Directory -->
+      <div id="catalogSection" class="max-w-7xl mx-auto px-4 sm:px-8 pt-9 space-y-5 reveal">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-stone-200 dark:border-stone-800 pb-4">
+          <div>
+            <h3 class="font-serif text-xl sm:text-2xl font-bold text-stone-900 dark:text-white">പുസ്തക ശേഖരം</h3>
+            <p class="text-xs text-stone-500 dark:text-stone-400 mt-0.5" id="homeBooksCountLabel">Loading books...</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <select id="homeTypeFilter" onchange="resetHomePageAndRender()" class="px-3 py-2 text-xs font-medium bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-lg outline-none">
+              <option value="">All Categories</option>
+            </select>
+            <select id="homeAvailFilter" onchange="resetHomePageAndRender()" class="px-3 py-2 text-xs font-medium bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-lg outline-none">
+              <option value="ALL">All Status</option>
+              <option value="AVAIL">Available Only</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- One-Tap Category Filter Pills -->
+        <div id="homeCategoryChips" class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar"></div>
+
+        <!-- Clean Hairline Directory List -->
+        <div id="homeBooksTableWrapper" class="overflow-x-auto"></div>
+        <div id="homePagination" class="flex flex-wrap items-center justify-center gap-1.5 pt-3"></div>
+      </div>
+
+      <!-- Editorial Quote + Leaderboards Split -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-8 pt-12 reveal">
+        <div class="py-6 px-5 sm:px-8 rounded-2xl bg-[#F4EFE6] dark:bg-stone-900/70 border border-stone-200/70 dark:border-stone-800 mb-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="space-y-1">
+            <p id="dailyMalayalamQuote" class="font-serif text-sm sm:text-base text-stone-800 dark:text-stone-100 leading-relaxed">
+              “നല്ല പുസ്തകങ്ങൾ നമ്മുടെ ഏകാന്തതയെ സമ്പന്നമാക്കുകയും ചിന്തകൾക്ക് പുതിയ ചിറകുകൾ നൽകുകയും ചെയ്യുന്നു.”
+            </p>
+            <p id="dailyMalayalamQuoteAuthor" class="text-xs font-semibold text-[#143D32] dark:text-emerald-400">— എം.ടി. വാസുദേവൻ നായർ</p>
+          </div>
+          <span class="text-[11px] uppercase tracking-widest text-stone-400 font-semibold shrink-0">വായനാ ചിന്ത</span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          <div class="space-y-3">
+            <div class="flex items-baseline justify-between border-b border-stone-200 dark:border-stone-800 pb-2.5">
+              <h3 class="font-serif text-lg font-bold text-stone-900 dark:text-white">ഏറ്റവും കൂടുതൽ വായിച്ച പുസ്തകങ്ങൾ</h3>
+              <span class="text-[11px] uppercase tracking-wider font-semibold text-stone-400">Most Read</span>
+            </div>
+            <div id="mostReadBooksList" class="divide-y divide-stone-200/70 dark:divide-stone-800"></div>
+          </div>
+
+          <div class="space-y-3">
+            <div class="flex items-baseline justify-between border-b border-stone-200 dark:border-stone-800 pb-2.5">
+              <h3 class="font-serif text-lg font-bold text-stone-900 dark:text-white">മികച്ച വായനക്കാർ</h3>
+              <span class="text-[11px] uppercase tracking-wider font-semibold text-stone-400">Star Readers</span>
+            </div>
+            <div id="topReadersList" class="divide-y divide-stone-200/70 dark:divide-stone-800"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Full-Width Editorial Footer -->
+      <footer class="mt-16 border-t border-stone-200 dark:border-stone-800 bg-[#F4EFE6]/70 dark:bg-[#121518] text-stone-700 dark:text-stone-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-8 py-10 space-y-8">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-5 space-y-2.5">
+              <p class="text-[11px] font-bold uppercase tracking-widest text-[#143D32] dark:text-emerald-400">കലാ-കായിക-സാംസ്കാരിക വേദി</p>
+              <h4 id="ftrLibName" class="font-serif text-stone-900 dark:text-white font-bold text-lg">ജ്ഞാനോദയ ആർട്സ് & സ്പോർട്സ് ക്ലബ്ബ് ലൈബ്രറി</h4>
+              <p id="ftrAddress" class="text-xs text-stone-600 dark:text-stone-400 leading-relaxed"></p>
+              <div class="pt-1 space-y-1 text-xs font-medium">
+                <p id="ftrTimings" class="text-stone-700 dark:text-stone-300"></p>
+                <p id="ftrPhone" class="text-[#143D32] dark:text-emerald-400 font-semibold"></p>
+              </div>
+            </div>
+            <div class="lg:col-span-7 space-y-3">
+              <h5 class="text-xs font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">ഭാരവാഹികൾ & ലൈബ്രറി കമ്മിറ്റി</h5>
+              <div id="ftrBearersGrid" class="grid grid-cols-1 sm:grid-cols-3 gap-4"></div>
+            </div>
+          </div>
+          <div class="border-t border-stone-200/80 dark:border-stone-800 pt-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-stone-500">
+            <p>&copy; 2026 ജ്ഞാനോദയ ആർട്സ് &amp; സ്പോർട്സ് ക്ലബ്ബ് ലൈബ്രറി • Digital Library System</p>
+            <p>Developed by <span class="text-stone-800 dark:text-stone-300 font-semibold">Midhun Vijay</span> • <span class="font-mono">v1.2</span></p>
+          </div>
+        </div>
+      </footer>
+    </section>
+
+    <!-- 2. MEMBER DASHBOARD -->
+    <section id="view_member" class="hidden max-w-[1680px] mx-auto px-3 sm:px-6 py-5 space-y-5">
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 sm:p-6 rounded-3xl shadow-sm space-y-4">
+        <div class="flex flex-wrap justify-between items-center gap-3">
+          <div class="flex items-center gap-3.5">
+            <div id="memAvatarInitial" class="w-12 h-12 rounded-2xl bg-[#143D32] text-amber-100 flex items-center justify-center font-bold text-lg shrink-0">M</div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 id="memDashName" class="text-base sm:text-xl font-bold text-slate-900 dark:text-white"></h2>
+                <span id="memDashId" class="text-[11px] font-mono font-bold bg-emerald-50 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 px-2 py-0.5 rounded-lg"></span>
+              </div>
+              <p id="memDashDetails" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5"></p>
+            </div>
+          </div>
+
+          <div class="desktop-only flex flex-wrap gap-2">
+            <button onclick="switchMemberTab('browse')" id="mTab_browse" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-900 dark:bg-indigo-600 text-white">Browse & Cart</button>
+            <button onclick="switchMemberTab('mybooks')" id="mTab_mybooks" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Reading History & Reviews</button>
+            <button onclick="switchMemberTab('suggest')" id="mTab_suggest" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Suggest Book</button>
+            <button onclick="switchMemberTab('profile')" id="mTab_profile" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Digital ID & Password</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2.5 pt-2 border-t border-slate-100 dark:border-slate-800">
+          <div class="bg-indigo-50/70 dark:bg-indigo-950/50 border border-indigo-100 dark:border-indigo-900/50 rounded-2xl px-3.5 py-2.5">
+            <p class="text-[11px] text-indigo-700 dark:text-indigo-300 font-medium">കയ്യിലുള്ളവ (Active)</p>
+            <p id="memStatActive" class="text-lg sm:text-xl font-bold text-indigo-950 dark:text-white mt-0.5">0</p>
+          </div>
+          <div class="bg-amber-50/70 dark:bg-amber-950/40 border border-amber-100 dark:border-amber-900/50 rounded-2xl px-3.5 py-2.5">
+            <p class="text-[11px] text-amber-700 dark:text-amber-300 font-medium">റിക്വസ്റ്റ് / Waitlist</p>
+            <p id="memStatPending" class="text-lg sm:text-xl font-bold text-amber-950 dark:text-white mt-0.5">0</p>
+          </div>
+          <div class="bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-900/50 rounded-2xl px-3.5 py-2.5">
+            <p class="text-[11px] text-emerald-700 dark:text-emerald-300 font-medium">വായിച്ചവ (History)</p>
+            <p id="memStatReturned" class="text-lg sm:text-xl font-bold text-emerald-950 dark:text-white mt-0.5">0</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="memSec_browse" class="space-y-4">
+        <div id="memRecommendBox" class="hidden bg-gradient-to-r from-indigo-50 to-violet-50 dark:from-indigo-950/40 dark:to-violet-950/40 border border-indigo-100 dark:border-indigo-900/60 p-4 rounded-2xl space-y-2.5">
+          <p class="text-xs font-bold text-indigo-800 dark:text-indigo-300">✨ നിങ്ങളുടെ വായനാശീലം അനുസരിച്ചുള്ള നിർദ്ദേശങ്ങൾ (Recommended For You)</p>
+          <div id="memRecommendList" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5"></div>
+        </div>
+
+        <div class="flex flex-wrap gap-2.5 justify-between items-center bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800">
+          <input type="text" id="memBookSearch" oninput="renderMemberBooks()" placeholder="പുസ്തകത്തിന്റെ പേര്, എഴുത്തുകാരൻ..."
+            class="px-3.5 py-2 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl flex-1 sm:w-80 outline-none" />
+          <div class="flex gap-2">
+            <select id="memBookType" onchange="renderMemberBooks()" class="px-3 py-2 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl">
+              <option value="">All Categories</option>
+            </select>
+            <button onclick="openModal('cartModal')" class="px-3.5 py-2 bg-[#143D32] dark:bg-emerald-700 text-white text-xs font-bold rounded-xl flex items-center gap-1.5">
+              <span>🛒 Cart</span>
+              <span id="memCartBadge" class="bg-white text-emerald-900 px-1.5 rounded-full text-[10px]">0</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="memberBooksTableWrapper" class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-x-auto"></div>
+      </div>
+
+      <div id="memSec_mybooks" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div class="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3.5">
+          <h3 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base">എന്റെ വായനാ ചരിത്രം (Reading History & Reviews)</h3>
+          <div id="memBorrowedList" class="space-y-3"></div>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3.5">
+          <h3 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base">എന്റെ ബുക്ക് റിക്വസ്റ്റുകൾ & Waitlist</h3>
+          <div id="memRequestsList" class="space-y-3"></div>
+        </div>
+      </div>
+
+      <div id="memSec_suggest" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+          <h3 class="font-bold text-slate-900 dark:text-white text-base">പുതിയ പുസ്തകം നിർദ്ദേശിക്കുക (Suggest a Book)</h3>
+          <form onsubmit="handleMemberSuggestBook(event)" class="space-y-3">
+            <input type="text" id="sugTitle" required placeholder="Book Title (പുസ്തകത്തിന്റെ പേര്) *" class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+            <input type="text" id="sugAuthor" placeholder="Author (എഴുത്തുകാരൻ - Optional)" class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+            <textarea id="sugNotes" rows="2" placeholder="Remarks (Optional)" class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl"></textarea>
+            <button type="submit" class="w-full py-2.5 bg-[#143D32] dark:bg-emerald-700 text-white text-sm font-semibold rounded-xl">Submit Book Suggestion</button>
+          </form>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+          <h3 class="font-bold text-slate-900 dark:text-white text-base">അംഗങ്ങളുടെ നിർദ്ദേശങ്ങൾ</h3>
+          <div id="memSuggestionsList" class="space-y-2.5"></div>
+        </div>
+      </div>
+
+      <div id="memSec_profile" class="hidden grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+          <div class="flex justify-between items-center">
+            <h3 class="font-bold text-slate-900 dark:text-white text-base">Digital Library ID Card</h3>
+            <button onclick="downloadDigitalIdCard()" class="px-3 py-1.5 bg-[#143D32] dark:bg-emerald-700 text-white text-xs font-semibold rounded-xl">Download ID PDF</button>
+          </div>
+          <div id="digitalIdCardArea" class="bg-gradient-to-br from-[#143D32] via-[#1B4F41] to-[#0D2821] text-white p-5 rounded-3xl shadow-lg border border-amber-400/30 space-y-4">
+            <div class="flex justify-between items-start border-b border-white/15 pb-3">
+              <div>
+                <p class="text-[10px] uppercase tracking-widest text-amber-300 font-bold">Official Member Pass</p>
+                <h4 class="font-bold text-sm mt-0.5">ജ്ഞാനോദയ ആർട്സ് & സ്പോർട്സ് ക്ലബ്ബ് ലൈബ്രറി</h4>
+              </div>
+              <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">ACTIVE</span>
+            </div>
+            <div class="flex items-center justify-between gap-4">
+              <div class="space-y-1 text-xs">
+                <p class="text-amber-300 font-mono font-bold text-sm" id="cardMemId">MEM-101</p>
+                <p class="font-bold text-base text-white" id="cardMemName">-</p>
+                <p class="text-slate-300 text-[11px]" id="cardMemPhone">-</p>
+                <p class="text-slate-400 text-[11px]" id="cardMemAddr">-</p>
+              </div>
+              <div class="bg-white p-2 rounded-2xl shrink-0">
+                <canvas id="memberQrCanvas" width="84" height="84"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+          <h3 class="font-bold text-slate-900 dark:text-white text-base border-b border-slate-100 dark:border-slate-800 pb-3">Change Password</h3>
+          <form onsubmit="handleMemberChangePassword(event)" class="space-y-3">
+            <input type="password" id="cpOldPass" required placeholder="Current Password *" class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+            <input type="password" id="cpNewPass" required minlength="4" placeholder="New Password *" class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+            <input type="password" id="cpConfirmPass" required minlength="4" placeholder="Confirm New Password *" class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+            <button type="submit" class="w-full py-2.5 bg-[#143D32] dark:bg-emerald-700 text-white text-sm font-semibold rounded-xl">Update Password</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. ADMIN COMMAND CENTER -->
+    <section id="view_admin" class="hidden max-w-[1680px] mx-auto px-3 sm:px-6 py-5">
+      <div id="mobileAdminBar" class="lg:hidden mb-4 bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-2 no-print">
+        <label for="mobileAdminTabSelect" class="block text-[11px] font-extrabold uppercase tracking-wider text-emerald-800 dark:text-emerald-400">
+          Admin Section (സെക്ഷൻ തിരഞ്ഞെടുക്കുക)
+        </label>
+        <select id="mobileAdminTabSelect" onchange="switchAdminTab(this.value)"
+          class="w-full px-3.5 py-2.5 text-sm font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white outline-none">
+          <option value="overview">📊 Analytics &amp; Audit</option>
+          <option value="circulation">🔄 Issue &amp; Direct Return</option>
+          <option value="orders">📦 Book Requests</option>
+          <option value="users">👥 Members &amp; Add</option>
+          <option value="books">📚 Books &amp; Suggestions</option>
+          <option value="cms">🏠 Home Management</option>
+          <option value="settings">⚙️ Settings</option>
+          <option value="registers">📋 Registers (PDF/Excel)</option>
+          <option value="profile">🔐 Admin Profile &amp; Backup</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        <aside class="desktop-only lg:col-span-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-4 space-y-2 sticky top-20 no-print">
+          <p class="px-3 py-1.5 text-xs font-extrabold uppercase tracking-wider text-slate-400">Librarian Workspace</p>
+          <button onclick="switchAdminTab('overview')" id="aTab_overview" class="a-tab w-full text-left px-4 py-3 rounded-xl text-sm font-bold bg-slate-900 text-white flex justify-between items-center">
+            <span>📊 Analytics &amp; Audit</span>
+          </button>
+          <button onclick="switchAdminTab('circulation')" id="aTab_circulation" class="a-tab w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-200 flex justify-between items-center">
+            <span>🔄 Issue &amp; Direct Return</span>
+            <span id="badgeActiveLoans" class="px-2 py-0.5 text-xs font-extrabold bg-emerald-100 text-emerald-700 rounded-full">0</span>
+          </button>
+          <button onclick="switchAdminTab('orders')" id="aTab_orders" class="a-tab w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-200 flex justify-between items-center">
+            <span>📦 Book Requests</span>
+            <span id="badgeOrders" class="px-2 py-0.5 text-xs font-extrabold bg-indigo-100 text-indigo-700 rounded-full">0</span>
+          </button>
+          <button onclick="switchAdminTab('users')" id="aTab_users" class="a-tab w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-200 flex justify-between items-center">
+            <span>👥 Members &amp; Add</span>
+          </button>
+          <button onclick="switchAdminTab('books')" id="aTab_books" class="a-tab w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-200 flex justify-between items-center">
+            <span>📚 Books &amp; Suggestions</span>
+            <span id="badgeSuggestions" class="px-2 py-0.5 text-xs font-extrabold bg-amber-100 text-amber-800 rounded-full">0</span>
+          </button>
+          <button onclick="switchAdminTab('cms')" id="aTab_cms" class="a-tab w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-200 flex justify-between items-center">
+            <span>🏠 Home Management</span>
+          </button>
+          <button onclick="switchAdminTab('settings')" id="aTab_settings" class="a-tab w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-200 flex justify-between items-center">
+            <span>⚙️ Settings</span>
+          </button>
+          <button onclick="switchAdminTab('registers')" id="aTab_registers" class="a-tab w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-200 flex justify-between items-center">
+            <span>📋 Registers (PDF/Excel)</span>
+          </button>
+          <button onclick="switchAdminTab('profile')" id="aTab_profile" class="a-tab w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-200 flex justify-between items-center">
+            <span>🔐 Admin Profile</span>
+          </button>
+        </aside>
+
+        <div class="lg:col-span-9 space-y-5">
+          <!-- ADMIN TAB 0: OVERVIEW -->
+          <div id="aSec_overview" class="a-sec space-y-5">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div onclick="switchAdminTab('books')" class="cursor-pointer bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <p class="text-[11px] text-slate-500">Available / Total Books</p>
+                <p id="admStatBooks" class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mt-1">0 / 0</p>
+              </div>
+              <div onclick="switchAdminTab('orders')" class="cursor-pointer bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <p class="text-[11px] text-slate-500">Pending Requests</p>
+                <p id="admStatOrders" class="text-lg sm:text-xl font-bold text-indigo-600 mt-1">0</p>
+              </div>
+              <div onclick="switchAdminTab('circulation')" class="cursor-pointer bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <p class="text-[11px] text-slate-500">Currently Issued</p>
+                <p id="admStatIssued" class="text-lg sm:text-xl font-bold text-emerald-600 mt-1">0</p>
+              </div>
+              <div onclick="switchAdminTab('users')" class="cursor-pointer bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <p class="text-[11px] text-slate-500">Total Members</p>
+                <p id="admStatMembers" class="text-lg sm:text-xl font-bold text-amber-600 mt-1">0</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
+              <div class="md:col-span-6 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <h3 class="font-bold text-slate-900 dark:text-white text-sm mb-3">Books by Category</h3>
+                <div class="h-52 flex items-center justify-center">
+                  <canvas id="categoryChartCanvas"></canvas>
+                </div>
+              </div>
+              <div class="md:col-span-6 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+                <h3 class="font-bold text-slate-900 dark:text-white text-sm">Recent Activity Log</h3>
+                <div id="auditLogList" class="space-y-2 max-h-52 overflow-y-auto text-xs"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ADMIN TAB 1: DIRECT ISSUE & DIRECT RETURN -->
+          <div id="aSec_circulation" class="a-sec hidden grid grid-cols-1 lg:grid-cols-12 gap-5">
+            <div class="lg:col-span-5 space-y-4">
+              <div class="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <h3 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base mb-3 flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-indigo-600"></span>
+                  Direct Book Issue
+                </h3>
+                <form onsubmit="adminIssueBook(event)" class="space-y-3">
+                  <div class="relative">
+                    <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Search Member *</label>
+                    <input type="text" id="issMemSearch" autocomplete="off" onfocus="filterMemberDropdown()" oninput="filterMemberDropdown()"
+                      placeholder="പേര് അല്ലെങ്കിൽ നമ്പർ..." class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none" />
+                    <input type="hidden" id="issMemId" />
+                    <div id="issMemSelectedTag" class="hidden mt-1.5 px-2.5 py-1 bg-emerald-50 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 rounded-lg text-xs font-semibold flex justify-between">
+                      <span id="issMemSelectedText"></span>
+                      <button type="button" onclick="clearSelectedMember()" class="text-rose-600 font-bold">&times;</button>
+                    </div>
+                    <div id="issMemDropdown" class="hidden absolute left-0 right-0 mt-1 max-h-48 overflow-y-auto bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg z-20 divide-y divide-slate-100"></div>
+                  </div>
+
+                  <div class="relative">
+                    <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Search Book *</label>
+                    <input type="text" id="issBookSearch" autocomplete="off" onfocus="filterBookDropdown()" oninput="filterBookDropdown()"
+                      placeholder="പുസ്തകത്തിന്റെ പേര്..." class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none" />
+                    <input type="hidden" id="issBookId" />
+                    <div id="issBookSelectedTag" class="hidden mt-1.5 px-2.5 py-1 bg-indigo-50 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300 rounded-lg text-xs font-semibold flex justify-between">
+                      <span id="issBookSelectedText"></span>
+                      <button type="button" onclick="clearSelectedBook()" class="text-rose-600 font-bold">&times;</button>
+                    </div>
+                    <div id="issBookDropdown" class="hidden absolute left-0 right-0 mt-1 max-h-48 overflow-y-auto bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg z-20 divide-y divide-slate-100"></div>
+                  </div>
+
+                  <div class="grid grid-cols-2 gap-2">
+                    <div>
+                      <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Issue Date *</label>
+                      <input type="date" id="issDate" required onchange="updateDueDateField('issDate', 'issDueDate')" class="w-full px-2.5 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+                    </div>
+                    <div>
+                      <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Due Date *</label>
+                      <input type="date" id="issDueDate" required class="w-full px-2.5 py-2 text-xs bg-indigo-50/50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold" />
+                    </div>
+                  </div>
+                  <button type="submit" class="w-full py-2.5 bg-indigo-600 text-white text-xs sm:text-sm font-semibold rounded-xl">Issue Book</button>
+                </form>
+              </div>
+
+              <div class="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl border border-emerald-200/80 dark:border-emerald-900/60 shadow-sm">
+                <h3 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base mb-2.5 flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+                  Quick Book Return
+                </h3>
+                <input type="text" id="quickReturnSearch" autocomplete="off" onfocus="filterQuickReturnDropdown()" oninput="filterQuickReturnDropdown()"
+                  placeholder="തിരിച്ചു തരുന്ന അംഗത്തിന്റെ പേര് / പുസ്തകം..." class="w-full px-3 py-2 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none" />
+                <div id="quickReturnDropdown" class="hidden mt-2 max-h-56 overflow-y-auto bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl divide-y divide-slate-200"></div>
+              </div>
+            </div>
+
+            <div class="lg:col-span-7 bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+              <div class="flex flex-wrap justify-between items-center gap-2">
+                <h3 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base">Issued & Returned Books</h3>
+                <div class="flex gap-2">
+                  <select id="circStatusFilter" onchange="renderAdminCirculation()" class="px-2.5 py-1.5 text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800">
+                    <option value="ALL">All Records</option>
+                    <option value="ISSUED">Currently Issued</option>
+                    <option value="RETURNED">Returned</option>
+                  </select>
+                  <input type="text" id="circTableFilter" oninput="renderAdminCirculation()" placeholder="Filter..."
+                    class="px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg outline-none w-28 sm:w-40" />
+                </div>
+              </div>
+              <div id="admCirculationContainer" class="space-y-2.5"></div>
+            </div>
+          </div>
+
+          <!-- ADMIN TAB 2: ORDERS -->
+          <div id="aSec_orders" class="a-sec hidden space-y-4">
+            <div class="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-wrap justify-between items-center gap-2">
+              <div>
+                <h3 class="font-extrabold text-slate-900 dark:text-white text-base sm:text-lg">📦 Book Requests &amp; Delivery Mode</h3>
+                <p class="text-xs text-slate-500">പുതിയ റിക്വസ്റ്റുകൾ ഇടതുവശത്തും, അപ്രൂവ്/റിജക്ട് ചെയ്തവ വലതുവശത്തും കാണാം</p>
+              </div>
+              <button onclick="fetchAllData()" class="px-3.5 py-2 bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 text-xs font-bold rounded-xl">
+                🔄 Refresh Now
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 items-start">
+              <div class="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl border-2 border-amber-200/80 dark:border-amber-900/60 shadow-sm space-y-3">
+                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2.5">
+                  <h4 class="font-extrabold text-amber-800 dark:text-amber-300 text-sm sm:text-base">⏳ Pending / New Requests</h4>
+                  <span id="pendingOrdersColCount" class="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-amber-100 text-amber-900">0</span>
+                </div>
+                <div id="admPendingOrdersContainer" class="space-y-3"></div>
+              </div>
+
+              <div class="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+                  <div class="flex items-center gap-2">
+                    <h4 class="font-extrabold text-emerald-800 dark:text-emerald-300 text-sm sm:text-base">✅ Approved &amp; Processed</h4>
+                    <span id="processedOrdersColCount" class="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-900">0</span>
+                  </div>
+                  <input type="text" id="processedOrderSearch" oninput="renderAdminOrders()" placeholder="Search history..."
+                    class="px-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl w-40 sm:w-48 outline-none" />
+                </div>
+                <div id="admProcessedOrdersContainer" class="divide-y divide-slate-100 dark:divide-slate-800 max-h-[550px] overflow-y-auto"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ADMIN TAB 3: MEMBERS -->
+          <div id="aSec_users" class="a-sec hidden grid grid-cols-1 lg:grid-cols-12 gap-5">
+            <div class="lg:col-span-5 bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm h-fit space-y-3.5">
+              <div>
+                <h3 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base">Direct Member Registration</h3>
+                <p class="text-[11px] text-slate-500 mt-0.5">Password ozhivakkiyal random One-Time PIN undakkum.</p>
+              </div>
+              <form onsubmit="adminDirectCreateMember(event)" class="space-y-3">
+                <input type="text" id="admNewMemName" required placeholder="Full Name *" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+                <input type="tel" id="admNewMemPhone" required placeholder="Mobile Number *" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+                <input type="text" id="admNewMemAddr" required placeholder="Address / Place *" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+                <input type="text" id="admNewMemPass" placeholder="Login Password" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-mono" />
+                <button type="submit" class="w-full py-2.5 bg-indigo-600 text-white text-xs sm:text-sm font-semibold rounded-xl">Create Member</button>
+              </form>
+            </div>
+
+            <div class="lg:col-span-7 bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+              <div class="flex flex-wrap justify-between items-center gap-2">
+                <h3 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base">Members Directory</h3>
+                <input type="text" id="admUserSearch" oninput="renderAdminUsers()" placeholder="Search member..."
+                  class="px-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl w-44 sm:w-56 outline-none" />
+              </div>
+              <div id="admUsersContainer" class="space-y-2.5"></div>
+            </div>
+          </div>
+
+          <!-- ADMIN TAB 4: BOOKS & SUGGESTIONS -->
+          <div id="aSec_books" class="a-sec hidden space-y-5">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+              <div class="lg:col-span-5 bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm h-fit">
+                <h3 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base mb-1">New Book Entry</h3>
+                <p class="text-[11px] text-slate-500 mb-3.5">പുസ്തകത്തിന്റെ പേര് മാത്രം നിർബന്ധമാണ്; ബാക്കിയുള്ളവ Optional ആണ്.</p>
+                <form onsubmit="adminAddBook(event)" class="space-y-3">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Book Name (പുസ്തകത്തിന്റെ പേര്) *</label>
+                    <input type="text" id="bkTitle" required placeholder="Enter book title..." class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+                  </div>
+                  <div class="grid grid-cols-2 gap-2.5">
+                    <div>
+                      <label class="block text-xs font-medium text-slate-500 mb-1">Category (Optional)</label>
+                      <input type="text" id="bkType" list="categorySuggestionsList" placeholder="General" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+                    </div>
+                    <div>
+                      <label class="block text-xs font-medium text-slate-500 mb-1">Price ₹ (Optional)</label>
+                      <input type="number" id="bkPrice" min="0" placeholder="0" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-medium text-slate-500 mb-1">Author (Optional)</label>
+                    <input type="text" id="bkAuthor" placeholder="Author name" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+                  </div>
+                  <div class="grid grid-cols-2 gap-2.5">
+                    <div>
+                      <label class="block text-xs font-medium text-slate-500 mb-1">Total Copies</label>
+                      <input type="number" id="bkCopies" min="1" value="1" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+                    </div>
+                    <div>
+                      <label class="block text-xs font-medium text-slate-500 mb-1">Shelf No. (Optional)</label>
+                      <input type="text" id="bkShelf" placeholder="A-01" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+                    </div>
+                  </div>
+                  <button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-semibold rounded-xl">Save Book</button>
+                </form>
+              </div>
+
+              <div class="lg:col-span-7 space-y-5">
+                <div class="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+                  <div class="flex flex-wrap justify-between items-center gap-2">
+                    <h3 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base">All Library Books</h3>
+                    <input type="text" id="admBookFilter" oninput="renderAdminBooks()" placeholder="Search book..."
+                      class="px-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg outline-none w-44 sm:w-56" />
+                  </div>
+                  <div id="admBooksContainer" class="space-y-2 max-h-[380px] overflow-y-auto"></div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+                  <div>
+                    <h3 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base">💡 Member Book Suggestions</h3>
+                    <p class="text-[11px] text-slate-500">Approve & Add ക്ലിക്ക് ചെയ്താൽ വിവരങ്ങൾ നൽകി നേരിട്ട് ബുക്ക് ലിസ്റ്റിലേക്ക് ചേർക്കാം</p>
+                  </div>
+                  <div id="admSuggestionsContainer" class="space-y-2"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ADMIN TAB 5: HOME PAGE CMS & RULES -->
+          <div id="aSec_cms" class="a-sec hidden grid grid-cols-1 lg:grid-cols-12 gap-5">
+            <div class="lg:col-span-7 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+              <h3 class="font-bold text-slate-900 dark:text-white text-base border-b border-slate-100 dark:border-slate-800 pb-3">Home Page CMS</h3>
+              <form onsubmit="handleSaveCms(event)" class="space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <input type="text" id="cmsLibName" required placeholder="Library Name *" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+                  <input type="text" id="cmsTagline" required placeholder="Tagline *" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+                </div>
+                <input type="url" id="cmsLogoUrl" placeholder="Library Logo Image URL (Optional - e.g. https://...)" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+                <input type="text" id="cmsNotice" placeholder="Scrolling Notice Message" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+                <textarea id="cmsAbout" rows="2" placeholder="About Library" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl"></textarea>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  <input type="text" id="cmsTimings" placeholder="Timings" class="w-full px-2.5 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+                  <input type="text" id="cmsPhone" placeholder="Phone" class="w-full px-2.5 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+                  <input type="text" id="cmsAddress" placeholder="Address" class="w-full px-2.5 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+                </div>
+                <div class="p-3 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
+                  <p class="text-xs font-bold">ഭാരവാഹികളുടെ പേരും ഫോൺ നമ്പറും</p>
+                  <div class="grid grid-cols-3 gap-2">
+                    <input type="text" id="b0Role" placeholder="Position" class="px-2 py-1.5 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg" />
+                    <input type="text" id="b0Name" placeholder="Name" class="px-2 py-1.5 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg" />
+                    <input type="text" id="b0Phone" placeholder="Phone" class="px-2 py-1.5 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg" />
+                  </div>
+                  <div class="grid grid-cols-3 gap-2">
+                    <input type="text" id="b1Role" placeholder="Position" class="px-2 py-1.5 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg" />
+                    <input type="text" id="b1Name" placeholder="Name" class="px-2 py-1.5 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg" />
+                    <input type="text" id="b1Phone" placeholder="Phone" class="px-2 py-1.5 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg" />
+                  </div>
+                  <div class="grid grid-cols-3 gap-2">
+                    <input type="text" id="b2Role" placeholder="Position" class="px-2 py-1.5 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg" />
+                    <input type="text" id="b2Name" placeholder="Name" class="px-2 py-1.5 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg" />
+                    <input type="text" id="b2Phone" placeholder="Phone" class="px-2 py-1.5 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg" />
+                  </div>
+                </div>
+                <button type="submit" class="w-full py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-xl">Publish Home Page Changes</button>
+              </form>
+            </div>
+
+            <div class="lg:col-span-5 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm h-fit space-y-4">
+              <h3 class="font-bold text-slate-900 dark:text-white text-base border-b border-slate-100 dark:border-slate-800 pb-3">Library Rules</h3>
+              <form onsubmit="handleSaveSettings(event)" class="space-y-3">
+                <div>
+                  <label class="block text-xs font-semibold mb-1">Loan Duration (Days)</label>
+                  <input type="number" id="setLoanDays" min="1" max="180" required class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold mb-1">Max Books Per Member</label>
+                  <input type="number" id="setMaxBooks" min="1" max="20" required class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+                </div>
+                <button type="submit" class="w-full py-2.5 bg-slate-900 dark:bg-indigo-600 text-white text-sm font-semibold rounded-xl">Save Rules</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- ADMIN TAB: SETTINGS -->
+          <div id="aSec_settings" class="a-sec hidden max-w-2xl" style="zoom: normal;">
+            <div class="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+              <div class="border-b border-slate-100 dark:border-slate-800 pb-2.5">
+                <h3 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base">⚙️ Settings (ക്രമീകരണങ്ങൾ)</h3>
+                <p class="text-[11px] text-slate-500 mt-0.5">ലൈബ്രറി സേവനങ്ങളും ലോഗിൻ നിയമങ്ങളും നിയന്ത്രിക്കുക</p>
+              </div>
+
+              <form onsubmit="handleSaveAppSettings(event)" class="divide-y divide-slate-100 dark:divide-slate-800">
+                <div class="py-3.5 flex items-center justify-between gap-4">
+                  <div class="space-y-0.5">
+                    <p class="text-[10px] font-extrabold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">📦 Delivery Mode</p>
+                    <p class="text-xs sm:text-sm font-semibold text-slate-900 dark:text-white">🏠 Allow Home Delivery option</p>
+                    <p class="text-[11px] text-slate-500 leading-relaxed">ഹോം ഡെലിവറി ഓപ്ഷൻ അനുവദിക്കുക. OFF ആക്കിയാൽ അംഗങ്ങൾക്ക് "Direct Pickup" മാത്രമേ തിരഞ്ഞെടുക്കാൻ കഴിയൂ.</p>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                    <input type="checkbox" id="cmsAllowHomeDelivery" checked class="sr-only peer" />
+                    <div class="w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full peer peer-checked:bg-indigo-600 transition-colors after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5 shadow-xs"></div>
+                  </label>
+                </div>
+
+                <div class="py-3.5 flex items-center justify-between gap-4">
+                  <div class="space-y-0.5">
+                    <p class="text-[10px] font-extrabold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">🔐 Member Login</p>
+                    <p class="text-xs sm:text-sm font-semibold text-slate-900 dark:text-white">⚡ Allow repeat requests without login</p>
+                    <p class="text-[11px] text-slate-500 leading-relaxed">രജിസ്റ്റർ ചെയ്ത നമ്പറിൽ ലോഗിൻ ഇല്ലാതെ റിക്വസ്റ്റ് അനുവദിക്കുക. തിരക്കുള്ള സമയത്ത് മാത്രം ON ആക്കുക; പുസ്തകം കൈമാറുമ്പോൾ ആളെ ഉറപ്പാക്കുക.</p>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                    <input type="checkbox" id="cmsAllowGuestRepeat" class="sr-only peer" />
+                    <div class="w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full peer peer-checked:bg-indigo-600 transition-colors after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5 shadow-xs"></div>
+                  </label>
+                </div>
+
+                <div class="pt-4 flex justify-end">
+                  <button type="submit" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-semibold rounded-xl shadow-xs transition">
+                    Save Settings
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- ADMIN TAB 6: REGISTERS -->
+          <div id="aSec_registers" class="a-sec hidden space-y-4">
+            <div class="flex flex-wrap justify-between items-center gap-2 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 no-print">
+              <div class="flex flex-wrap gap-1.5">
+                <button onclick="showRegister('stock')" id="regBtn_stock" class="px-3 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white">1. Stock</button>
+                <button onclick="showRegister('issue')" id="regBtn_issue" class="px-3 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">2. Issue & Return</button>
+                <button onclick="showRegister('members')" id="regBtn_members" class="px-3 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">3. Members</button>
+                <button onclick="showRegister('audit')" id="regBtn_audit" class="px-3 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">4. Stock Audit (In Hand)</button>
+              </div>
+              <div class="flex flex-wrap gap-1.5">
+                <button onclick="exportCurrentRegisterExcel()" class="px-3 py-2 bg-emerald-600 text-white text-xs font-semibold rounded-xl">📊 Excel (.xlsx)</button>
+                <button onclick="exportCurrentRegisterPdf()" class="px-3 py-2 bg-rose-600 text-white text-xs font-semibold rounded-xl">📄 Download PDF</button>
+                <button onclick="window.print()" class="px-3 py-2 bg-slate-900 dark:bg-slate-700 text-white text-xs font-semibold rounded-xl">🖨️ Print</button>
+              </div>
+            </div>
+
+            <div id="registerPrintArea" class="bg-white text-slate-900 p-5 rounded-2xl border border-slate-200 shadow-sm overflow-x-auto">
+              <div class="text-center border-b border-slate-200 pb-3 mb-4">
+                <h2 id="regHeaderLib" class="font-bold text-base sm:text-lg text-slate-900">ജ്ഞാനോദയ ആർട്സ് & സ്പോർട്സ് ക്ലബ്ബ് ലൈബ്രറി</h2>
+                <p id="registerTitle" class="text-xs font-semibold text-slate-500 uppercase mt-1">BOOK STOCK REGISTER</p>
+              </div>
+              <div id="registerTableContainer"></div>
+            </div>
+          </div>
+
+          <!-- ADMIN TAB 7: ADMIN PROFILE & DATABASE BACKUP -->
+          <div id="aSec_profile" class="a-sec hidden grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+              <h3 class="font-bold text-slate-900 dark:text-white text-base border-b border-slate-100 dark:border-slate-800 pb-3">Librarian Admin Profile</h3>
+              <div class="space-y-2.5 text-sm">
+                <div class="flex justify-between py-1"><span class="text-slate-500">Admin Email:</span><span id="admProfileUser" class="font-mono font-bold">admin</span></div>
+                <div class="flex justify-between py-1"><span class="text-slate-500">Status:</span><span class="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 rounded-full text-xs font-semibold">Active</span></div>
+              </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+              <h3 class="font-bold text-slate-900 dark:text-white text-base border-b border-slate-100 dark:border-slate-800 pb-3">Change Admin Password</h3>
+              <form onsubmit="handleAdminChangePassword(event)" class="space-y-3">
+                <input type="password" id="admOldPass" required placeholder="Current Password *" class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+                <input type="password" id="admNewPass" required minlength="4" placeholder="New Password *" class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+                <input type="password" id="admConfirmPass" required minlength="4" placeholder="Confirm New Password *" class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+                <button type="submit" class="w-full py-2.5 bg-slate-900 dark:bg-indigo-600 text-white text-sm font-semibold rounded-xl">Update Password</button>
+              </form>
+            </div>
+
+            <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 md:col-span-2">
+              <div class="border-b border-slate-100 dark:border-slate-800 pb-3">
+                <h3 class="font-bold text-slate-900 dark:text-white text-base">💾 Database Backup & Restore</h3>
+                <p class="text-xs text-slate-500 mt-0.5">മുഴുവൻ ലൈബ്രറി ഡാറ്റയും സുരക്ഷിതമായി ബാക്കപ്പ് എടുക്കാനും തിരികെ റീസ്റ്റോർ ചെയ്യാനും</p>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+                <div class="p-4 rounded-2xl bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/50 space-y-2.5">
+                  <p class="font-bold text-sm text-indigo-950 dark:text-indigo-200">1. Export Full Backup (.json)</p>
+                  <p class="text-xs text-slate-600 dark:text-slate-400">പുസ്തകങ്ങൾ, അംഗങ്ങൾ, ഇടപാടുകൾ, ഓർഡറുകൾ, സെറ്റിംഗ്സ് എന്നിവയെല്ലാം ഒറ്റ ഫയലായി ഡൗൺലോഡ് ചെയ്യുക.</p>
+                  <button type="button" onclick="exportFullDatabaseBackup()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-semibold rounded-xl shadow-sm">
+                    ⬇️ Download Full Backup
+                  </button>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/70 dark:border-amber-900/50 space-y-2.5">
+                  <p class="font-bold text-sm text-amber-950 dark:text-amber-200">2. Import / Restore Backup (.json)</p>
+                  <p class="text-xs text-slate-600 dark:text-slate-400">നേരത്തെ ഡൗൺലോഡ് ചെയ്ത ബാക്കപ്പ് ഫയൽ തിരഞ്ഞെടുത്ത് ഡാറ്റാബേസ് റീസ്റ്റോർ ചെയ്യുക.</p>
+                  <input type="file" id="dbBackupFileInput" accept=".json" class="block w-full text-xs text-slate-600 dark:text-slate-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-700" />
+                  <button type="button" onclick="importFullDatabaseBackup()" class="w-full py-2.5 bg-slate-900 dark:bg-amber-600 hover:opacity-90 text-white text-xs sm:text-sm font-semibold rounded-xl">
+                    ⬆️ Restore Selected Backup
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+<!-- Mobile / App Mode Bottom Navigation Bar -->
+  <nav id="mobileBottomNav" class="hidden fixed bottom-0 left-0 right-0 z-30 glass border-t border-stone-200/90 dark:border-stone-800 px-2 py-1.5 no-print">
+    <div id="mobileBottomNavInner" class="max-w-[460px] mx-auto grid grid-cols-4 gap-1 text-stone-600 dark:text-stone-300"></div>
+  </nav>
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- 0. Available Books Quick Order Modal -->
+  <div id="availableBooksModal" class="fixed inset-0 bg-stone-950/60 backdrop-blur-xs z-40 hidden items-center justify-center p-4">
+    <div class="bg-[#FCFAF6] dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl max-w-3xl w-full p-5 sm:p-6 shadow-2xl space-y-4 max-h-[88vh] flex flex-col">
+      <div class="flex justify-between items-center border-b border-stone-200/80 dark:border-stone-800 pb-3">
+        <div>
+          <h3 class="font-serif font-bold text-lg text-stone-900 dark:text-white">ഇപ്പോൾ ലഭ്യമായ പുസ്തകങ്ങൾ</h3>
+          <p class="text-xs text-stone-500">നേരിട്ട് Request ക്ലിക്ക് ചെയ്ത് ഓർഡർ ചെയ്യാം</p>
+        </div>
+        <button onclick="closeModal('availableBooksModal')" class="w-8 h-8 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-500 text-lg">&times;</button>
+      </div>
+      <input type="text" id="availModalSearch" oninput="renderAvailableBooksModalList()" placeholder="Search available book or author..."
+        class="w-full px-3.5 py-2 text-sm bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl outline-none" />
+      <div id="availModalTableContainer" class="flex-1 overflow-y-auto"></div>
+    </div>
+  </div>
+
+  <!-- 1. Guest Direct Book Request Modal -->
+  <div id="guestRequestModal" class="fixed inset-0 bg-stone-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-[#FCFAF6] dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative space-y-4">
+      <button onclick="closeModal('guestRequestModal')" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-500 flex items-center justify-center text-lg">&times;</button>
+      <div>
+        <span class="text-[11px] font-bold uppercase tracking-wider text-[#143D32] dark:text-emerald-400">Book Request</span>
+        <h3 id="grBookTitle" class="font-serif text-lg font-bold text-stone-900 dark:text-white mt-0.5"></h3>
+      </div>
+
+      <form onsubmit="submitGuestDirectRequest(event)" class="space-y-3">
+        <input type="hidden" id="grBookId" />
+        <div>
+          <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">മൊബൈൽ നമ്പർ (Mobile Number) *</label>
+          <input type="tel" id="grPhone" required oninput="checkExistingPhoneHint(this.value)" placeholder="10-digit mobile number"
+            class="w-full px-3.5 py-2.5 text-sm bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl outline-none focus:border-[#143D32]" />
+          <div id="grExistingMemberBanner" class="hidden mt-2 p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-xs space-y-1.5">
+            <p class="font-bold text-emerald-800 dark:text-emerald-300">സ്വാഗതം, <span id="grFoundName"></span>!</p>
+            <p class="text-[11px] text-emerald-700 dark:text-emerald-400">താഴെ Direct Request അയക്കാം, അല്ലെങ്കിൽ പഴയ വായനാ ചരിത്രം കാണാൻ Login ചെയ്യാം.</p>
+            <button type="button" onclick="closeModal('guestRequestModal'); openUnifiedAuth('userLogin', document.getElementById('grPhone').value)"
+              class="px-3 py-1 bg-emerald-700 text-white text-[11px] font-bold rounded-lg">
+              Login & View My History &rarr;
+            </button>
+          </div>
+        </div>
+
+        <div id="grNewUserFields" class="space-y-3">
+          <div>
+            <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">പേര് (Full Name) *</label>
+            <input type="text" id="grName" required placeholder="നിങ്ങളുടെ പേര്" class="w-full px-3.5 py-2.5 text-sm bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl outline-none focus:border-[#143D32]" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">വിലാസം (Address) *</label>
+            <input type="text" id="grAddress" required placeholder="വീട്ടുപേര് / സ്ഥലം" class="w-full px-3.5 py-2.5 text-sm bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl outline-none focus:border-[#143D32]" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <label class="flex items-center gap-2 p-2.5 rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 cursor-pointer text-xs font-semibold">
+            <input type="radio" name="grDelivMode" value="Direct Pickup" checked class="accent-[#143D32]" /> Direct Pickup
+          </label>
+          <label id="grHomeDeliveryLabel" class="flex items-center gap-2 p-2.5 rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 cursor-pointer text-xs font-semibold">
+            <input type="radio" name="grDelivMode" value="Home Delivery" class="accent-[#143D32]" /> Home Delivery
+          </label>
+        </div>
+
+        <input type="text" id="grRemarks" placeholder="Remarks / Time (Optional)"
+          class="w-full px-3.5 py-2 text-xs bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl" />
+
+        <button type="submit" class="w-full py-2.5 bg-[#143D32] hover:bg-[#0E2B23] dark:bg-emerald-700 text-white text-sm font-semibold rounded-xl transition">
+          Send Book Request
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. Unified Auth Modal -->
+  <div id="unifiedAuthModal" class="fixed inset-0 bg-stone-950/60 backdrop-blur-xs z-40 hidden items-center justify-center p-4">
+    <div class="bg-[#FCFAF6] dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative space-y-4">
+      <button onclick="closeModal('unifiedAuthModal')" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-500 flex items-center justify-center text-lg">&times;</button>
+      <div class="text-center space-y-1 pt-1">
+        <h3 id="authModalHeading" class="font-serif text-xl font-bold text-stone-900 dark:text-white">Member Login</h3>
+        <p id="authModalSub" class="text-xs text-stone-500">നിങ്ങളുടെ വായനാ ചരിത്രം കാണാൻ ലോഗിൻ ചെയ്യുക</p>
+      </div>
+      <div id="roleToggleContainer" class="bg-stone-200/70 dark:bg-stone-800 p-1 rounded-xl grid grid-cols-2 text-xs font-semibold">
+        <button type="button" id="roleBtn_user" onclick="switchUnifiedRole('userLogin')" class="py-2 rounded-lg bg-white dark:bg-stone-700 text-[#143D32] dark:text-white shadow-xs">User</button>
+        <button type="button" id="roleBtn_admin" onclick="switchUnifiedRole('adminLogin')" class="py-2 rounded-lg text-stone-500">Admin</button>
+      </div>
+
+      <form id="uForm_userLogin" onsubmit="handleMemberLogin(event)" class="space-y-3.5">
+        <input type="tel" id="loginPhone" required placeholder="Mobile Number *" class="w-full px-4 py-2.5 text-sm bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl" />
+        <input type="password" id="loginPass" required placeholder="Password / One-Time PIN *" class="w-full px-4 py-2.5 text-sm bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl" />
+        <button type="submit" class="w-full py-2.5 bg-[#143D32] dark:bg-emerald-700 text-white text-sm font-semibold rounded-xl">Sign In</button>
+        <p class="text-center text-xs text-stone-500">New user? <button type="button" onclick="switchUnifiedRole('userSignup')" class="text-[#143D32] dark:text-emerald-400 font-bold hover:underline ml-1">Create Account</button></p>
+      </form>
+      <form id="uForm_adminLogin" onsubmit="handleAdminLogin(event)" class="hidden space-y-3.5">
+        <input type="email" id="admUser" required placeholder="Admin Email (e.g. admin@jnanodaya.org)" class="w-full px-4 py-2.5 text-sm bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl" />
+        <input type="password" id="admPass" required placeholder="Password" class="w-full px-4 py-2.5 text-sm bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl" />
+        <button type="submit" class="w-full py-2.5 bg-stone-900 dark:bg-emerald-700 text-white text-sm font-semibold rounded-xl">Sign In as Admin</button>
+      </form>
+
+      <form id="uForm_userSignup" onsubmit="handleMemberSignup(event)" class="hidden space-y-3">
+        <input type="text" id="regName" required placeholder="പേര് (Full Name) *" class="w-full px-3.5 py-2.5 text-sm bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl" />
+        <input type="tel" id="regPhone" required placeholder="മൊബൈൽ നമ്പർ *" class="w-full px-3.5 py-2.5 text-sm bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl" />
+        <input type="text" id="regAddress" required placeholder="വിലാസം *" class="w-full px-3.5 py-2.5 text-sm bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl" />
+        <input type="password" id="regPass" required placeholder="പാസ്‌വേഡ് *" class="w-full px-3.5 py-2.5 text-sm bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl" />
+        <button type="submit" class="w-full py-2.5 bg-[#143D32] dark:bg-emerald-700 text-white text-sm font-semibold rounded-xl">Register</button>
+        <p class="text-center text-xs text-stone-500">Already have account? <button type="button" onclick="switchUnifiedRole('userLogin')" class="text-[#143D32] dark:text-emerald-400 font-bold hover:underline ml-1">Sign In</button></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. Cart Modal -->
+  <div id="cartModal" class="fixed inset-0 bg-stone-950/60 z-40 hidden items-center justify-center p-4">
+    <div class="bg-[#FCFAF6] dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-stone-200/80 dark:border-stone-800 pb-3">
+        <h3 class="font-serif font-bold text-lg text-stone-900 dark:text-white">Book Request Cart</h3>
+        <button onclick="closeModal('cartModal')" class="text-stone-400 text-xl">&times;</button>
+      </div>
+      <div id="cartItemsList" class="space-y-2 max-h-48 overflow-y-auto"></div>
+      <form onsubmit="submitBatchCartOrder(event)" class="space-y-3 border-t border-stone-200/80 dark:border-stone-800 pt-3">
+        <div class="grid grid-cols-2 gap-2">
+          <label class="flex items-center gap-2 p-2.5 rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 cursor-pointer text-xs font-semibold">
+            <input type="radio" name="cartDelivMode" value="Direct Pickup" checked class="accent-[#143D32]" /> Direct Pickup
+          </label>
+          <label id="cartHomeDeliveryLabel" class="flex items-center gap-2 p-2.5 rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 cursor-pointer text-xs font-semibold">
+            <input type="radio" name="cartDelivMode" value="Home Delivery" class="accent-[#143D32]" /> Home Delivery
+          </label>
+        </div>
+        <input type="text" id="cartRemarks" placeholder="Remarks (Optional)" class="w-full px-3 py-2 text-xs bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl" />
+        <button type="submit" class="w-full py-2.5 bg-[#143D32] dark:bg-emerald-700 text-white text-sm font-semibold rounded-xl">Submit All Requests</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. Review Modal -->
+  <div id="reviewModal" class="fixed inset-0 bg-stone-950/60 z-40 hidden items-center justify-center p-4">
+    <div class="bg-[#FCFAF6] dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex justify-between items-center">
+        <div>
+          <h3 class="font-serif font-bold text-stone-900 dark:text-white">Reader Reviews</h3>
+          <p id="revBookTitle" class="text-xs font-semibold text-[#143D32] dark:text-emerald-400"></p>
+        </div>
+        <button onclick="closeModal('reviewModal')" class="text-stone-400 text-xl">&times;</button>
+      </div>
+      <div id="revExistingList" class="space-y-2 max-h-40 overflow-y-auto text-xs"></div>
+      <form id="revSubmitForm" onsubmit="submitBookReview(event)" class="hidden space-y-2.5 border-t border-stone-200/80 dark:border-stone-800 pt-3">
+        <input type="hidden" id="revBookId" />
+        <select id="revRating" class="w-full px-3 py-2 text-xs bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl font-bold">
+          <option value="5">★★★★★ (5/5)</option>
+          <option value="4">★★★★☆ (4/5)</option>
+          <option value="3">★★★☆☆ (3/5)</option>
+          <option value="2">★★☆☆☆ (2/5)</option>
+          <option value="1">★☆☆☆☆ (1/5)</option>
+        </select>
+        <input type="text" id="revComment" required placeholder="നിങ്ങളുടെ വായനാക്കുറിപ്പ്..." class="w-full px-3 py-2 text-xs bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl" />
+        <button type="submit" class="w-full py-2 bg-[#143D32] dark:bg-emerald-700 text-white text-xs font-semibold rounded-xl">Post Review</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. Admin Approve Suggestion Modal -->
+  <div id="approveSugModal" class="fixed inset-0 bg-slate-900/60 z-40 hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 border dark:border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-3">
+      <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-2">
+        <h3 class="font-bold text-slate-900 dark:text-white">Approve Suggestion & Add Book</h3>
+        <button onclick="closeModal('approveSugModal')" class="text-slate-400 text-xl">&times;</button>
+      </div>
+      <form onsubmit="submitApproveSuggestionToBook(event)" class="space-y-3">
+        <input type="hidden" id="asSugId" />
+        <div>
+          <label class="block text-xs font-semibold mb-1">Book Name *</label>
+          <input type="text" id="asTitle" required class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-500 mb-1">Category (Optional)</label>
+            <input type="text" id="asType" list="categorySuggestionsList" placeholder="General" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-500 mb-1">Price ₹ (Optional)</label>
+            <input type="number" id="asPrice" min="0" placeholder="0" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-500 mb-1">Author (Optional)</label>
+          <input type="text" id="asAuthor" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-500 mb-1">Total Copies</label>
+            <input type="number" id="asCopies" min="1" value="1" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-500 mb-1">Shelf No. (Optional)</label>
+            <input type="text" id="asShelf" placeholder="A-01" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+          </div>
+        </div>
+        <button type="submit" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl">
+          Add to Main Book List
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 6. Admin Issue Order Modal -->
+  <div id="issueOrderModal" class="fixed inset-0 bg-slate-900/60 z-40 hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 border dark:border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-slate-900 dark:text-white">Approve & Issue Book</h3>
+        <button onclick="closeModal('issueOrderModal')" class="text-slate-400 text-xl">&times;</button>
+      </div>
+      <div id="ioSummary" class="text-xs bg-indigo-50 dark:bg-indigo-950 text-indigo-900 dark:text-indigo-200 p-3.5 rounded-2xl space-y-1"></div>
+      <form onsubmit="confirmIssueFromOrder(event)" class="space-y-3">
+        <input type="hidden" id="ioOrderId" />
+        <input type="hidden" id="ioMemberId" />
+        <input type="hidden" id="ioBookId" />
+        <select id="ioDeliveryMode" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold">
+          <option value="Direct Pickup">🏢 Direct Pickup</option>
+          <option value="Home Delivery">🏠 Home Delivery</option>
+        </select>
+        <div class="grid grid-cols-2 gap-3">
+          <input type="date" id="ioIssueDate" required onchange="updateDueDateField('ioIssueDate', 'ioDueDate')" class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+          <input type="date" id="ioDueDate" required class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+        </div>
+        <div class="flex gap-2 pt-1">
+          <button type="button" onclick="approveOrderOnly()" class="flex-1 py-2.5 bg-indigo-100 text-indigo-800 text-xs font-bold rounded-xl">Approve Only</button>
+          <button type="submit" class="flex-1 py-2.5 bg-emerald-600 text-white text-xs font-bold rounded-xl">Approve & Issue</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 7. Admin Confirm Return Modal -->
+  <div id="confirmReturnModal" class="fixed inset-0 bg-slate-900/60 z-40 hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 border dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-slate-900 dark:text-white">Confirm Book Return</h3>
+        <button onclick="closeModal('confirmReturnModal')" class="text-slate-400 text-xl">&times;</button>
+      </div>
+      <div id="crSummary" class="text-xs text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 p-3 rounded-xl space-y-1"></div>
+      <form onsubmit="submitConfirmReturn(event)" class="space-y-3">
+        <input type="hidden" id="crTxnId" />
+        <div>
+          <label class="block text-xs font-semibold mb-1">Return Date *</label>
+          <input type="date" id="crReturnDate" required class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+        </div>
+        <button type="submit" class="w-full py-2.5 bg-emerald-600 text-white text-sm font-semibold rounded-xl">Confirm Return</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 8. Edit Book Modal -->
+  <div id="editBookModal" class="fixed inset-0 bg-slate-900/60 z-40 hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 border dark:border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-3">
+      <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-2">
+        <h3 class="font-bold text-slate-900 dark:text-white">Edit Book Details</h3>
+        <button onclick="closeModal('editBookModal')" class="text-slate-400 text-xl">&times;</button>
+      </div>
+      <form onsubmit="submitEditBook(event)" class="space-y-3">
+        <input type="text" id="ebId" disabled class="w-full px-3 py-2 text-xs bg-slate-100 dark:bg-slate-800 text-slate-500 font-mono rounded-xl" />
+        <div>
+          <label class="block text-xs font-semibold mb-1">Book Name *</label>
+          <input type="text" id="ebTitle" required class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs text-slate-500 mb-1">Category (Optional)</label>
+            <input type="text" id="ebType" list="categorySuggestionsList" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+          </div>
+          <div>
+            <label class="block text-xs text-slate-500 mb-1">Price ₹ (Optional)</label>
+            <input type="number" id="ebPrice" min="0" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs text-slate-500 mb-1">Author (Optional)</label>
+          <input type="text" id="ebAuthor" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs text-slate-500 mb-1">Total Copies</label>
+            <input type="number" id="ebCopies" min="1" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+          </div>
+          <div>
+            <label class="block text-xs text-slate-500 mb-1">Shelf No. (Optional)</label>
+            <input type="text" id="ebShelf" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+          </div>
+        </div>
+        <button type="submit" class="w-full py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-xl">Save Changes</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 9. Edit Member Modal -->
+  <div id="editMemberModal" class="fixed inset-0 bg-slate-900/60 z-40 hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 border dark:border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-3">
+      <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-2">
+        <h3 class="font-bold text-slate-900 dark:text-white">Edit Member Details</h3>
+        <button onclick="closeModal('editMemberModal')" class="text-slate-400 text-xl">&times;</button>
+      </div>
+      <form onsubmit="submitEditMember(event)" class="space-y-3">
+        <input type="text" id="emId" disabled class="w-full px-3.5 py-2 text-xs bg-slate-100 dark:bg-slate-800 text-slate-500 font-mono font-bold rounded-xl" />
+        <input type="text" id="emName" required class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+        <input type="tel" id="emPhone" required class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+        <input type="text" id="emAddress" required class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl" />
+        <select id="emStatus" class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl">
+          <option value="Approved">Approved</option>
+          <option value="Rejected">Blocked</option>
+        </select>
+        <button type="submit" class="w-full py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-xl">Update Member</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modular JS Files -->
+  <script src="config.js"></script>
+  <script src="api.js"></script>
+  <script src="home.js"></script>
+  <script src="member.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
